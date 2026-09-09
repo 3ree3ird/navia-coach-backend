@@ -1653,19 +1653,7 @@ async function startVoiceSession(micBtn, tokenBody, setStatus, toolContext) {
         ...(toolContext ? { tools: [{ functionDeclarations: toolContext.tools }] } : {}),
       },
       callbacks: {
-        onopen: () => {
-          setStatus("listening — go ahead");
-          micBtn.classList.add("active");
-          // The system instructions say "speak first", but the model won't
-          // actually produce a turn until it's given one to respond to —
-          // nudge it with a silent kickoff so it greets/asks first, unprompted.
-          try {
-            voiceSession.sendClientContent({
-              turns: [{ role: "user", parts: [{ text: "(begin — greet me and ask your first question now, as instructed)" }] }],
-              turnComplete: true,
-            });
-          } catch (e) { console.error("Kickoff send failed:", e); }
-        },
+        onopen: () => { setStatus("listening — go ahead"); micBtn.classList.add("active"); },
         onmessage: (msg) => {
           const parts = msg.serverContent?.modelTurn?.parts || [];
           for (const p of parts) {
@@ -1684,6 +1672,16 @@ async function startVoiceSession(micBtn, tokenBody, setStatus, toolContext) {
         onclose: () => { setStatus("call ended"); },
       },
     });
+
+    // The system instructions say "speak first", but the model won't
+    // actually produce a turn until it's given one to respond to — nudge
+    // it with a silent kickoff so it greets/asks first, unprompted.
+    try {
+      voiceSession.sendClientContent({
+        turns: [{ role: "user", parts: [{ text: "(begin — greet me and ask your first question now, as instructed)" }] }],
+        turnComplete: true,
+      });
+    } catch (e) { console.error("Kickoff send failed:", e); }
 
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     micCtx = new AudioContext({ sampleRate: 16000 });
