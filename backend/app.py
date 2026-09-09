@@ -15,12 +15,14 @@ Three endpoints:
 The Gemini API key never leaves this server.
 """
 
+import concurrent.futures
 import datetime
 import functools
 import json
 import os
 import re
 import secrets
+import traceback
 import urllib.error
 import urllib.request
 
@@ -734,10 +736,27 @@ def clean_text(value):
 
 def build_phases(raw):
     raw = clean_text(raw)
+    weeks = raw.get("weeks", [])
+
+    # Verify every week's source URL concurrently — done one-at-a-time this
+    # easily pushed total request time past gunicorn's 30s worker timeout
+    # (killed mid-request, so the browser just saw "nothing happened").
+    candidate_urls = {w.get("sourceUrl") for w in weeks if w.get("sourceUrl")}
+    verified = {}
+    if candidate_urls:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            future_to_url = {pool.submit(verify_url, u): u for u in candidate_urls}
+            for future in future_to_url:
+                url = future_to_url[future]
+                try:
+                    verified[url] = future.result()
+                except Exception:
+                    verified[url] = False
+
     weeks_out = []
-    for w in raw.get("weeks", []):
+    for w in weeks:
         url = w.get("sourceUrl")
-        if url and not verify_url(url):
+        if url and not verified.get(url):
             url = None
         summary = {}
         for lang in ("LT", "LV", "EE"):
@@ -810,7 +829,13 @@ def generate_journey():
     except json.JSONDecodeError:
         raise ApiError("The AI's journey design wasn't valid JSON — please try again.", 502)
 
-    return jsonify(build_phases(raw))
+    try:
+        return jsonify(build_phases(raw))
+    except ApiError:
+        raise
+    except Exception:
+        print(f"[generate-journey] build_phases failed:\n{traceback.format_exc()}")
+        raise ApiError("Something went wrong assembling the journey. Please try again.", 502)
 
 
 if __name__ == "__main__":
