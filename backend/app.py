@@ -36,8 +36,15 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY") or os.urandom(32)
 CORS(app, supports_credentials=True)
+
+# In production (Render), frontend and backend live on different subdomains,
+# so the session cookie must be SameSite=None + Secure to survive a
+# cross-site fetch. Locally (plain HTTP), Secure cookies can't be set at
+# all, so we fall back to SameSite=Lax there instead.
+IS_PRODUCTION = bool(os.environ.get("RENDER"))
 app.config.update(
-    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SAMESITE="None" if IS_PRODUCTION else "Lax",
+    SESSION_COOKIE_SECURE=IS_PRODUCTION,
     SESSION_COOKIE_HTTPONLY=True,
 )
 
