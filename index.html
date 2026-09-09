@@ -325,9 +325,56 @@
     opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:999;
   }
   #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .auth-overlay{
+    position:fixed; inset:0; background:var(--mist); z-index:1000;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .auth-card{
+    width:100%; max-width:360px; background:var(--warm); border:1px solid var(--line);
+    border-radius:14px; padding:28px 26px;
+  }
+  .auth-title{ font-family:'Playfair Display',serif; font-weight:600; font-size:24px; margin:0 0 6px; }
+  .auth-card .lede{ font-size:13.5px; margin:0 0 20px; }
+  .auth-card .field{ margin-bottom:14px; }
+  .auth-card input{ width:100%; }
+  .logout-btn{
+    font-family:'Inter',sans-serif; font-size:12px; color:var(--ink-soft); background:none;
+    border:none; cursor:pointer; text-decoration:underline; padding:0;
+  }
 </style>
 </head>
 <body>
+
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-card">
+    <div class="brandbar">
+      <div class="badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M4 15 C8 8, 16 8, 20 15" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M12 4 L13.4 8.6 L18 10 L13.4 11.4 L12 16 L10.6 11.4 L6 10 L10.6 8.6 Z" fill="var(--gold)"/>
+        </svg>
+      </div>
+      <div class="wordmark">Navia<span>.life</span></div>
+    </div>
+    <h1 id="authTitle" class="auth-title">Log in</h1>
+    <p class="lede" id="authLede">Your journeys and progress are saved to your account.</p>
+    <form id="authForm">
+      <div class="field">
+        <div class="field-label">Username</div>
+        <input type="text" id="authUsername" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <div class="field-label">Password</div>
+        <input type="password" id="authPassword" autocomplete="current-password" required>
+      </div>
+      <p class="companion-error" id="authError" hidden></p>
+      <button type="submit" class="companion-btn" id="authSubmitBtn" style="width:100%; margin-top:6px;">Log in</button>
+    </form>
+    <button type="button" class="summary-toggle" id="authToggleBtn" style="margin-top:16px;">Don't have an account? Register</button>
+  </div>
+</div>
+
 <div class="wrap">
 
   <div class="brandbar">
@@ -342,6 +389,7 @@
       <label for="journeySelect">Your journeys</label>
       <select id="journeySelect"></select>
     </div>
+    <button type="button" class="logout-btn" id="logoutBtn" style="margin-left:14px;">Log out</button>
   </div>
 
   <div class="companion">
@@ -394,19 +442,29 @@ import { GoogleGenAI, Modality } from "https://esm.sh/@google/genai";
 
 const BACKEND = "https://navia-coach-backend.onrender.com";
 
-// Falls back to localStorage when not running inside an environment that
-// already provides window.storage (e.g. a Claude Artifact).
-if (!window.storage) {
-  window.storage = {
-    async get(key) {
-      const value = localStorage.getItem(key);
-      return value === null ? null : { value };
-    },
-    async set(key, value) {
-      localStorage.setItem(key, value);
-    },
-  };
-}
+// Every saved value (journeys, progress, companion notes) lives server-side,
+// scoped to the logged-in account — never in localStorage.
+window.storage = {
+  async get(key) {
+    try {
+      const r = await fetch(`${BACKEND}/api/kv/${encodeURIComponent(key)}`, { credentials: "include" });
+      if (!r.ok) return null;
+      const data = await r.json();
+      return { value: data.value };
+    } catch (err) {
+      console.error("storage.get failed:", err);
+      return null;
+    }
+  },
+  async set(key, value) {
+    await fetch(`${BACKEND}/api/kv/${encodeURIComponent(key)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ value }),
+    });
+  },
+};
 
 function escapeHtml(str) {
   const div = document.createElement("div");
@@ -1706,7 +1764,83 @@ document.getElementById("journeySelect").addEventListener("change", (e) => {
   switchToJourney(e.target.value);
 });
 
-load();
+/* ---------- authentication gate ---------- */
+
+let authMode = "login";
+const authOverlay = document.getElementById("authOverlay");
+const authForm = document.getElementById("authForm");
+const authTitle = document.getElementById("authTitle");
+const authLede = document.getElementById("authLede");
+const authError = document.getElementById("authError");
+const authSubmitBtn = document.getElementById("authSubmitBtn");
+const authToggleBtn = document.getElementById("authToggleBtn");
+
+function setAuthMode(mode){
+  authMode = mode;
+  authError.hidden = true;
+  if (mode === "login"){
+    authTitle.textContent = "Log in";
+    authLede.textContent = "Your journeys and progress are saved to your account.";
+    authSubmitBtn.textContent = "Log in";
+    authToggleBtn.textContent = "Don't have an account? Register";
+  } else {
+    authTitle.textContent = "Create an account";
+    authLede.textContent = "Choose a username and password — your journeys will be saved here.";
+    authSubmitBtn.textContent = "Register";
+    authToggleBtn.textContent = "Already have an account? Log in";
+  }
+}
+
+authToggleBtn.addEventListener("click", () => setAuthMode(authMode === "login" ? "register" : "login"));
+
+authForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("authUsername").value.trim();
+  const password = document.getElementById("authPassword").value;
+  authError.hidden = true;
+  authSubmitBtn.disabled = true;
+  try {
+    const endpoint = authMode === "login" ? "/api/auth/login" : "/api/auth/register";
+    const r = await fetch(`${BACKEND}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "Something went wrong.");
+    authOverlay.hidden = true;
+    load();
+  } catch (err) {
+    authError.textContent = err.message;
+    authError.hidden = false;
+  } finally {
+    authSubmitBtn.disabled = false;
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  if (voiceActive) stopVoiceSession();
+  await fetch(`${BACKEND}/api/auth/logout`, { method: "POST", credentials: "include" });
+  window.location.reload();
+});
+
+async function checkAuthAndStart(){
+  try {
+    const r = await fetch(`${BACKEND}/api/auth/me`, { credentials: "include" });
+    if (r.ok) {
+      authOverlay.hidden = true;
+      load();
+      return;
+    }
+  } catch (err) {
+    console.error("Auth check failed:", err);
+  }
+  authOverlay.hidden = false;
+  setAuthMode("login");
+}
+
+checkAuthAndStart();
 </script>
 </body>
 </html>
