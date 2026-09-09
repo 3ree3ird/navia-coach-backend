@@ -20,6 +20,7 @@ import functools
 import json
 import os
 import re
+import secrets
 import sqlite3
 import urllib.error
 import urllib.request
@@ -86,6 +87,14 @@ def init_db():
             FOREIGN KEY (user_id) REFERENCES users(id)
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS auth_tokens (
+            token TEXT PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -93,11 +102,37 @@ def init_db():
 init_db()
 
 
+def current_user():
+    """Identify the logged-in user from an Authorization: Bearer <token>
+    header — used instead of the session cookie because the frontend and
+    backend live on different subdomains, and browsers increasingly block
+    cross-site cookies (SameSite=None isn't enough on its own on some
+    setups). Falls back to the session cookie for same-origin/local use."""
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[len("Bearer "):].strip()
+        db = get_db()
+        row = db.execute(
+            "SELECT users.id AS id, users.username AS username "
+            "FROM auth_tokens JOIN users ON users.id = auth_tokens.user_id "
+            "WHERE auth_tokens.token = ?",
+            (token,),
+        ).fetchone()
+        if row:
+            return {"id": row["id"], "username": row["username"]}
+        return None
+    if session.get("user_id"):
+        return {"id": session["user_id"], "username": session.get("username")}
+    return None
+
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped(*args, **kwargs):
-        if not session.get("user_id"):
+        user = current_user()
+        if not user:
             raise ApiError("Please log in first.", 401)
+        g.user = user
         return view(*args, **kwargs)
     return wrapped
 
@@ -126,10 +161,16 @@ def register():
         "INSERT INTO users (username, password_hash, created_at) VALUES (?, ?, ?)",
         (username, generate_password_hash(password), now),
     )
+    user_id = cur.lastrowid
+    token = secrets.token_urlsafe(32)
+    db.execute(
+        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (?, ?, ?)",
+        (token, user_id, now),
+    )
     db.commit()
-    session["user_id"] = cur.lastrowid
+    session["user_id"] = user_id
     session["username"] = username
-    return jsonify({"username": username})
+    return jsonify({"username": username, "token": token})
 
 
 @app.post("/api/auth/login")
@@ -143,22 +184,35 @@ def login():
     if not row or not check_password_hash(row["password_hash"], password):
         raise ApiError("Incorrect username or password.", 401)
 
+    token = secrets.token_urlsafe(32)
+    now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+    db.execute(
+        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (?, ?, ?)",
+        (token, row["id"], now),
+    )
+    db.commit()
     session["user_id"] = row["id"]
     session["username"] = username
-    return jsonify({"username": username})
+    return jsonify({"username": username, "token": token})
 
 
 @app.post("/api/auth/logout")
 def logout():
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        db = get_db()
+        db.execute("DELETE FROM auth_tokens WHERE token = ?", (auth_header[len("Bearer "):].strip(),))
+        db.commit()
     session.clear()
     return jsonify({"ok": True})
 
 
 @app.get("/api/auth/me")
 def me():
-    if not session.get("user_id"):
+    user = current_user()
+    if not user:
         raise ApiError("Not logged in.", 401)
-    return jsonify({"username": session["username"]})
+    return jsonify({"username": user["username"]})
 
 
 @app.get("/api/kv/<path:key>")
@@ -167,7 +221,7 @@ def kv_get(key):
     db = get_db()
     row = db.execute(
         "SELECT value FROM kv_store WHERE user_id = ? AND key = ?",
-        (session["user_id"], key),
+        (g.user["id"], key),
     ).fetchone()
     if not row:
         raise ApiError("Not found.", 404)
@@ -183,7 +237,7 @@ def kv_set(key):
     db.execute(
         "INSERT INTO kv_store (user_id, key, value) VALUES (?, ?, ?) "
         "ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value",
-        (session["user_id"], key, value),
+        (g.user["id"], key, value),
     )
     db.commit()
     return jsonify({"ok": True})

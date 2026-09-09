@@ -442,12 +442,25 @@ import { GoogleGenAI, Modality } from "https://esm.sh/@google/genai";
 
 const BACKEND = "https://navia-coach-backend.onrender.com";
 
+// The frontend and backend live on different subdomains, and browsers
+// increasingly block cross-site cookies even with SameSite=None — so
+// login uses a bearer token (stored here) instead of a session cookie.
+const AUTH_TOKEN_KEY = "navia-auth-token";
+function getAuthToken(){ return localStorage.getItem(AUTH_TOKEN_KEY); }
+function setAuthToken(token){ localStorage.setItem(AUTH_TOKEN_KEY, token); }
+function clearAuthToken(){ localStorage.removeItem(AUTH_TOKEN_KEY); }
+function authHeaders(){
+  const token = getAuthToken();
+  return token ? { "Authorization": `Bearer ${token}` } : {};
+}
+
 // Every saved value (journeys, progress, companion notes) lives server-side,
-// scoped to the logged-in account — never in localStorage.
+// scoped to the logged-in account — never in localStorage (except the auth
+// token itself, above).
 window.storage = {
   async get(key) {
     try {
-      const r = await fetch(`${BACKEND}/api/kv/${encodeURIComponent(key)}`, { credentials: "include" });
+      const r = await fetch(`${BACKEND}/api/kv/${encodeURIComponent(key)}`, { headers: authHeaders() });
       if (!r.ok) return null;
       const data = await r.json();
       return { value: data.value };
@@ -459,8 +472,7 @@ window.storage = {
   async set(key, value) {
     await fetch(`${BACKEND}/api/kv/${encodeURIComponent(key)}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify({ value }),
     });
   },
@@ -1804,11 +1816,11 @@ authForm.addEventListener("submit", async (e) => {
     const r = await fetch(`${BACKEND}${endpoint}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",
       body: JSON.stringify({ username, password }),
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || "Something went wrong.");
+    setAuthToken(data.token);
     authOverlay.hidden = true;
     load();
   } catch (err) {
@@ -1821,13 +1833,15 @@ authForm.addEventListener("submit", async (e) => {
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   if (voiceActive) stopVoiceSession();
-  await fetch(`${BACKEND}/api/auth/logout`, { method: "POST", credentials: "include" });
+  await fetch(`${BACKEND}/api/auth/logout`, { method: "POST", headers: authHeaders() });
+  clearAuthToken();
   window.location.reload();
 });
 
 async function checkAuthAndStart(){
   try {
-    const r = await fetch(`${BACKEND}/api/auth/me`, { credentials: "include" });
+    if (!getAuthToken()) throw new Error("no token");
+    const r = await fetch(`${BACKEND}/api/auth/me`, { headers: authHeaders() });
     if (r.ok) {
       authOverlay.hidden = true;
       load();
