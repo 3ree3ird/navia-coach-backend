@@ -495,7 +495,7 @@
   </div>
 
   <div class="eyebrow">Growth Program · 7 Weeks</div>
-  <h1>Overcoming Burnout<br>in 7 Steps</h1>
+  <h1 id="journeyTitle">Overcoming Burnout<br>in 7 Steps</h1>
   <p class="lede">From recognizing the signals to a lasting plan. Tap a week to see the source, task, and worksheet — fill it in right here, then tap the number to mark it done.</p>
 
   <div class="summary">
@@ -1760,7 +1760,7 @@ const intakeLoading = document.getElementById("intakeLoading");
 
 function setJourneyHeader(title){
   const eyebrow = document.querySelector(".eyebrow");
-  const h1 = document.querySelector("h1");
+  const h1 = document.getElementById("journeyTitle");
   if (eyebrow) eyebrow.textContent = `Your Journey · ${TOTAL} Weeks`;
   if (h1) h1.textContent = title;
 }
