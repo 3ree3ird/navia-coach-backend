@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overcoming Burnout in 7 Steps — Program Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Navia.life brand tokens — Main·Adults surface (violet on light) */
+    --ink:#26212c;
+    --ink-soft:#6f6a77;
+    --mist:#f3f1f6;
+    --warm:#f7f5ef;
+    --cream:#fcfbf8;
+    --line:#e4dfea;
+    --violet:#502880;
+    --violet-deep:#3c1c63;
+    --violet-soft:#ece7f3;
+    --gold:#e0a868;
+    --orange-start:#f9a826;
+    --orange-end:#ef6d00;
+    /* legacy aliases used throughout this file */
+    --paper:var(--mist);
+    --card:var(--warm);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:680px; margin:0 auto; padding:36px 20px 90px;}
+
+  .brandbar{ display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+  .brandbar .badge{
+    width:30px; height:30px; border-radius:9px; background:var(--violet);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brandbar .wordmark{ font-family:'Playfair Display',serif; font-weight:600; font-size:17px; color:var(--ink); }
+  .brandbar .wordmark span{ font-weight:400; }
+  .journey-switcher{ margin-left:auto; display:flex; align-items:center; gap:7px; }
+  .journey-switcher label{ font-size:11px; color:var(--ink-soft); }
+  .journey-switcher select{
+    font-family:'Inter',sans-serif; font-size:12.5px; color:var(--ink);
+    background:var(--warm); border:1px solid var(--line); border-radius:8px;
+    padding:5px 8px; max-width:180px;
+  }
+
+  .eyebrow{
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--ink-soft); font-weight:600; margin-bottom:14px;
+  }
+  h1{
+    font-family:'Playfair Display',serif; font-weight:600;
+    font-size:clamp(28px,6.5vw,40px); line-height:1.05;
+    margin:0 0 10px; letter-spacing:-.01em;
+  }
+  .lede{ font-size:15.5px; color:var(--ink-soft); max-width:50ch; margin:0 0 28px; }
+
+  .summary{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:34px; display:flex; align-items:center; gap:16px;
+  }
+  .summary-count{
+    font-family:'Playfair Display',serif; font-size:30px; font-weight:600; flex-shrink:0; color:var(--violet);
+  }
+  .summary-count span{font-size:15px; color:var(--ink-soft); font-weight:500; font-family:'Inter',sans-serif;}
+  .summary-track{ flex:1; height:6px; border-radius:3px; background:var(--line); overflow:hidden; }
+  .summary-fill{
+    height:100%; border-radius:3px; background:linear-gradient(90deg, var(--violet), var(--gold));
+    transition:width .4s ease; width:0%;
+  }
+
+  .phase{margin-bottom:6px;}
+  .phase-label{
+    font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-soft); margin:30px 0 14px; padding-left:38px;
+  }
+  .phase:first-of-type .phase-label{margin-top:0;}
+
+  .timeline{position:relative;}
+  .rail{
+    position:absolute; left:14px; top:6px; bottom:6px; width:2px;
+    background:var(--line); z-index:0;
+  }
+
+  .week{ position:relative; display:flex; gap:16px; margin-bottom:14px; }
+  .node{
+    position:relative; z-index:1; flex-shrink:0; width:30px; height:30px;
+    border-radius:50%; background:var(--paper); border:2px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; color:var(--ink-soft); margin-top:4px;
+    transition:all .25s ease; cursor:pointer;
+  }
+  .node.done{ border-color:transparent; color:#fff; }
+
+  .week-card{
+    flex:1; background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; cursor:pointer; transition:border-color .2s ease;
+  }
+  .week-card:hover{border-color:var(--violet-soft);}
+  .week-card.done{opacity:.72;}
+
+  .week-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+  .week-title{ font-family:'Playfair Display',serif; font-weight:600; font-size:16.5px; }
+  .week-title .num{ color:var(--ink-soft); font-family:'Inter',sans-serif; font-weight:600; font-size:12px; margin-right:6px; }
+  .week-badge{
+    font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; white-space:nowrap;
+    background:var(--violet-soft); color:var(--violet-deep);
+  }
+  .week-badge.pending{ background:transparent; border:1px solid var(--line); color:var(--ink-soft); }
+  .week-blurb{ font-size:13.5px; color:var(--ink-soft); margin:5px 0 0; }
+
+  .week-details{ display:none; cursor:default; }
+  .week-card.open .week-details{ display:block; }
+
+  .section-label{
+    font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--violet); margin:0 0 8px;
+  }
+
+  /* resource */
+  .resource-block{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+  .resource-title-link{
+    display:inline-block; font-family:'Playfair Display',serif; font-weight:600; font-size:14.5px;
+    color:var(--violet-deep); text-decoration:none; border-bottom:1px solid var(--violet-soft); line-height:1.3;
+  }
+  .resource-title-link:hover{ border-bottom-color:var(--violet-deep); }
+  .resource-title-static{ font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px; color:var(--ink-soft); }
+  .resource-outlet{ font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .resource-blurb{ font-size:13px; color:var(--ink); line-height:1.55; margin:8px 0 0; }
+  .resource-fulllink{
+    display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600;
+    color:var(--violet-deep); text-decoration:none; margin-top:10px;
+  }
+  .resource-fulllink:hover{ text-decoration:underline; }
+
+  .summary-toggle{
+    display:inline-flex; align-items:center; gap:5px; margin-top:12px; font-size:12px; font-weight:600;
+    color:var(--violet); background:none; border:none; padding:0; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .summary-toggle .chev{ transition:transform .2s ease; font-size:10px; }
+  .summary-toggle.open .chev{ transform:rotate(180deg); }
+  .summary-panel{ display:none; margin-top:12px; background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .summary-panel.open{ display:block; }
+
+  .lang-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+  .lang-tab{
+    font-family:'Inter',sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.03em;
+    padding:4px 11px; border-radius:20px; border:1px solid var(--line); background:transparent;
+    color:var(--ink-soft); cursor:pointer;
+  }
+  .lang-tab.active{ background:var(--violet); border-color:var(--violet); color:#fff; }
+
+  .summary-panel ul{ margin:0 0 10px; padding-left:18px; }
+  .summary-panel li{ font-size:13px; color:var(--ink); margin-bottom:6px; line-height:1.5; }
+  .summary-panel li:last-child{ margin-bottom:0; }
+  .summary-takeaway{
+    font-size:12.5px; color:var(--ink-soft); font-style:italic; margin:10px 0 0;
+    padding-top:10px; border-top:1px solid var(--line);
+  }
+
+  /* task */
+  .task-block{ margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+  .task-text{ font-size:13.5px; color:var(--ink); line-height:1.55; margin:0 0 10px; }
+  .task-hint{ font-size:12.5px; color:var(--ink-soft); margin:16px 0 0; padding-top:14px; border-top:1px solid var(--line); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .hint-node{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:50%; border:2px solid var(--line);
+    font-size:10.5px; font-weight:700; color:var(--ink-soft); background:var(--paper);
+    cursor:pointer; flex-shrink:0;
+  }
+  .hint-node.done{ border-color:transparent; color:#fff; }
+
+  /* worksheet form */
+  .sheet-block{ margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+  .sheet-name{ font-family:'Playfair Display',serif; font-weight:600; font-size:14.5px; color:var(--ink); margin:0 0 4px; }
+  .sheet-desc{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin:0 0 14px; }
+
+  .field{ margin-bottom:16px; }
+  .field:last-child{ margin-bottom:0; }
+  .field-label{ font-size:12.5px; font-weight:600; color:var(--ink); margin:0 0 6px; }
+  .field-label-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .field-label-row .field-label{ margin:0; }
+  .field-btn-stack.row{ display:flex; flex-direction:row; gap:7px; margin-bottom:6px; }
+
+  input[type="text"], textarea{
+    width:100%; font-family:'Inter',sans-serif; font-size:13.5px; color:var(--ink);
+    background:#fff; border:1px solid var(--line); border-radius:8px; padding:8px 10px;
+    resize:vertical;
+  }
+  input[type="text"]:focus, textarea:focus{
+    outline:none; border-color:var(--violet); box-shadow:0 0 0 3px var(--violet-soft);
+  }
+  textarea{ min-height:56px; }
+  textarea.tall{ min-height:140px; }
+  input.just-filled, textarea.just-filled{
+    border-color:var(--gold); box-shadow:0 0 0 3px rgba(224,168,104,.35);
+    transition:border-color .3s ease, box-shadow .3s ease;
+  }
+
+  .field-input{ display:flex; align-items:flex-start; gap:7px; }
+  .field-input input, .field-input textarea{ flex:1; min-width:0; }
+  .field-btn-stack{ display:flex; flex-direction:column; gap:7px; flex-shrink:0; }
+  .draft-fill-btn{
+    width:30px; height:30px; border-radius:50%; border:1px solid var(--violet-soft);
+    background:#fff; color:var(--gold); font-size:13px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .draft-fill-btn:hover{ background:var(--violet-soft); }
+  .draft-fill-btn.processing{ background:var(--gold); color:var(--violet-deep); border-color:transparent; cursor:default; animation:pulse 1.2s ease-in-out infinite; }
+  .draft-fill-btn:disabled{ cursor:default; }
+  .edit-fill-btn{
+    flex-shrink:0; width:30px; height:30px; border-radius:50%; border:1px solid var(--line);
+    background:#fff; color:var(--ink-soft); font-size:12px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .edit-fill-btn:hover{ background:var(--warm); color:var(--ink); }
+
+  .row-group{ display:flex; flex-direction:column; gap:8px; }
+  .row-item{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  .row-item-label{ font-size:12px; font-weight:700; color:var(--violet-deep); margin:0 0 8px; }
+  .row-col{ margin-bottom:8px; }
+  .row-col:last-child{ margin-bottom:0; }
+  .row-col-label{ font-size:11px; font-weight:600; color:var(--ink-soft); margin:0 0 4px; }
+
+  .range-line{ display:flex; align-items:center; gap:10px; }
+  input[type="range"]{
+    -webkit-appearance:none; flex:1; height:4px; border-radius:2px; background:var(--line); outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:15px; height:15px; border-radius:50%;
+    background:#fff; border:2.5px solid var(--violet); cursor:pointer;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:15px; height:15px; border-radius:50%; background:#fff; border:2.5px solid var(--violet); cursor:pointer;
+  }
+  .range-val{ width:18px; text-align:right; font-variant-numeric:tabular-nums; font-size:12.5px; font-weight:700; color:var(--violet); }
+
+  .list-item{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .list-item input{ flex:1; min-width:0; }
+  .list-item:last-child{ margin-bottom:0; }
+  .list-num{
+    width:20px; height:20px; flex-shrink:0; border-radius:50%; background:var(--violet-soft);
+    color:var(--violet-deep); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+
+  .save-status{
+    display:flex; align-items:center; gap:6px; margin-top:14px; padding-top:12px;
+    border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-soft);
+  }
+  .save-dot{ width:6px; height:6px; border-radius:50%; background:var(--violet); transition:opacity .3s; }
+
+  .footer-note{ margin-top:34px; font-size:12.5px; color:var(--ink-soft); text-align:center; }
+
+  /* AI companion */
+  .companion{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; margin-bottom:30px;
+  }
+  .companion-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:4px;
+  }
+  .companion-label{
+    font-family:'Playfair Display',serif; font-weight:600; font-size:15px; color:var(--ink);
+    display:flex; align-items:center; gap:8px;
+  }
+  .companion-label::before{
+    content:"";
+    width:8px; height:8px; border-radius:50%;
+    background:linear-gradient(135deg, var(--gold), var(--violet));
+    flex-shrink:0;
+  }
+  .companion-actions{ display:flex; gap:8px; flex-shrink:0; }
+  .companion-btn{
+    font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600;
+    background:var(--violet); color:#fff; border:none; border-radius:20px;
+    padding:7px 16px; cursor:pointer; flex-shrink:0; white-space:nowrap;
+  }
+  .companion-btn:hover{ opacity:.9; }
+  .companion-btn:disabled{ opacity:.55; cursor:default; }
+  .companion-btn.voice{ background:#fff; color:var(--violet); border:1px solid var(--violet-soft); }
+  .companion-btn.voice.active{ background:var(--gold); color:var(--violet-deep); border-color:transparent; }
+  .companion-empty{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:8px 0 0; }
+  .voice-panel{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+  .voice-row{ display:flex; align-items:center; gap:12px; }
+  .voice-mic{
+    width:40px; height:40px; border-radius:50%; border:none; background:var(--violet);
+    color:#fff; font-size:16px; cursor:pointer; flex-shrink:0;
+  }
+  .voice-mic.active{ background:#c0392b; }
+  .voice-mic.small{ width:30px; height:30px; font-size:13px; }
+  .voice-status{ font-size:12.5px; color:var(--ink-soft); }
+  .summary-voice{
+    display:flex; align-items:center; gap:10px; margin-top:12px;
+    padding-top:12px; border-top:1px solid var(--line);
+  }
+  .companion-note{
+    font-family:'Playfair Display',serif; font-size:15.5px; line-height:1.6; color:var(--ink);
+    margin:12px 0 0; padding-top:12px; border-top:1px solid var(--line);
+  }
+  .companion-meta{
+    font-size:11px; color:var(--ink-soft); margin-top:10px; font-family:'Inter',sans-serif;
+  }
+  .companion-error{
+    font-size:12.5px; color:#b5533e; margin:10px 0 0;
+  }
+  @keyframes pulse{ 0%,100%{opacity:.4;} 50%{opacity:1;} }
+  .companion-loading{
+    font-size:13px; color:var(--ink-soft); margin:8px 0 0;
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+
+  #toast{
+    position:fixed; left:50%; bottom:24px; transform:translateX(-50%) translateY(20px);
+    max-width:88vw; background:var(--ink); color:#fff; font-size:13px; line-height:1.5;
+    padding:12px 18px; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.18);
+    opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:999;
+  }
+  #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brandbar">
+    <div class="badge">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M4 15 C8 8, 16 8, 20 15" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M12 4 L13.4 8.6 L18 10 L13.4 11.4 L12 16 L10.6 11.4 L6 10 L10.6 8.6 Z" fill="var(--gold)"/>
+      </svg>
+    </div>
+    <div class="wordmark">Navia<span>.life</span></div>
+    <div class="journey-switcher" id="journeySwitcher" hidden>
+      <label for="journeySelect">Your journeys</label>
+      <select id="journeySelect"></select>
+    </div>
+  </div>
+
+  <div class="companion">
+    <div class="companion-head">
+      <div class="companion-label">Build your own journey</div>
+    </div>
+    <p class="companion-empty">Tell us what you want to work on — talk it through, and we'll build a personal, week-by-week journey with real sources, just for you.</p>
+    <div class="voice-row">
+      <button class="voice-mic" id="intakeMicBtn">🎙</button>
+      <div class="voice-status" id="intakeStatus">Tap to start talking</div>
+    </div>
+    <p class="companion-loading" id="intakeLoading" hidden>Building your journey — this can take a minute or two...</p>
+  </div>
+
+  <div class="eyebrow">Growth Program · 7 Weeks</div>
+  <h1>Overcoming Burnout<br>in 7 Steps</h1>
+  <p class="lede">From recognizing the signals to a lasting plan. Tap a week to see the source, task, and worksheet — fill it in right here, then tap the number to mark it done.</p>
+
+  <div class="summary">
+    <div class="summary-count" id="summaryCount">0<span>/7</span></div>
+    <div class="summary-track"><div class="summary-fill" id="summaryFill"></div></div>
+  </div>
+
+  <div class="companion">
+    <div class="companion-head">
+      <div class="companion-label">Your companion</div>
+      <div class="companion-actions">
+        <button class="companion-btn voice" id="voiceBtn">🎙 Talk it through</button>
+        <button class="companion-btn" id="companionBtn">Check in</button>
+      </div>
+    </div>
+    <div id="companionBody">
+      <p class="companion-empty">A short, personal note based on what you've actually written — not a generic reminder. Ask for a check-in any time you want a moment of perspective, or talk it through out loud.</p>
+    </div>
+    <div id="voicePanel" class="voice-panel" hidden>
+      <div class="voice-row">
+        <button class="voice-mic" id="voiceMicBtn">🎙</button>
+        <div class="voice-status" id="voiceStatus">Tap to start talking</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="phases"></div>
+
+  <p class="footer-note">Everything is saved automatically on this device.</p>
+</div>
+
+<script type="module">
+import { GoogleGenAI, Modality } from "https://esm.sh/@google/genai";
+
+const BACKEND = "http://localhost:5051";
+
+// Falls back to localStorage when not running inside an environment that
+// already provides window.storage (e.g. a Claude Artifact).
+if (!window.storage) {
+  window.storage = {
+    async get(key) {
+      const value = localStorage.getItem(key);
+      return value === null ? null : { value };
+    },
+    async set(key, value) {
+      localStorage.setItem(key, value);
+    },
+  };
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function sourceTypeIcon(type){
+  return { podcast: "🎧", video: "🎬", book: "📖", article: "📄" }[type] || "📄";
+}
+
+let toastTimer = null;
+function showToast(message) {
+  let el = document.getElementById("toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    document.body.appendChild(el);
+  }
+  el.textContent = message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 5000);
+}
+
+async function readErrorMessage(response, fallback) {
+  try {
+    const data = await response.json();
+    return data.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+const LANGS = ["LT","LV","EE"];
+
+/* ---------- journeys: each journey (the built-in one + any generated
+   ones) is saved separately so switching between them never loses progress ---------- */
+const JOURNEYS_INDEX_KEY = "navia-journeys-index";
+const BUILTIN_JOURNEY_ID = "burnout-demo";
+const BUILTIN_JOURNEY_TITLE = "Overcoming Burnout in 7 Steps";
+let currentJourneyId = BUILTIN_JOURNEY_ID;
+let currentJourneyTitle = BUILTIN_JOURNEY_TITLE;
+
+function journeyKey(kind, id){ return `navia-journey-${kind}:${id}`; }
+
+async function loadJourneysIndex(){
+  try{
+    const r = await window.storage.get(JOURNEYS_INDEX_KEY);
+    if(r && r.value){ const parsed = JSON.parse(r.value); if(Array.isArray(parsed)) return parsed; }
+  }catch(err){ console.log("No journeys index yet:", err); }
+  return [];
+}
+async function saveJourneysIndex(list){
+  await window.storage.set(JOURNEYS_INDEX_KEY, JSON.stringify(list));
+}
+async function registerJourney(id, title){
+  const list = await loadJourneysIndex();
+  const existing = list.find(j => j.id === id);
+  if(existing){ existing.title = title; }
+  else{ list.push({ id, title }); }
+  await saveJourneysIndex(list);
+}
+async function persistCurrentJourney(){
+  await window.storage.set(journeyKey("phases", currentJourneyId), JSON.stringify(PHASES));
+  await window.storage.set(journeyKey("tasks", currentJourneyId), JSON.stringify(taskDone));
+  await window.storage.set(journeyKey("forms", currentJourneyId), JSON.stringify(formData));
+  await registerJourney(currentJourneyId, currentJourneyTitle);
+}
+
+let PHASES = [
+  {
+    label: "Awareness",
+    weeks: [
+      {
+        title: "Recognize the Signals",
+        blurb: "See the shape of burnout before it's obvious.",
+        sourceTitle: "The Stages of Burnout and How to Recognize the Warning Signs Early",
+        sourceOutlet: "Simply Psychology",
+        sourceUrl: "https://www.simplypsychology.com/articles/burnout-stages-warning-signs",
+        sourceBlurb: "Describes the five-stage burnout model — from the 'honeymoon phase' to full exhaustion — and explains why the earliest signs are usually dismissed as temporary.",
+        summary: {
+          LT: {
+            points: [
+              "Perdegimas vystosi penkiomis stadijomis: „medaus mėnesio“ fazė, streso pradžia, lėtinis stresas, visiškas perdegimas, įprastas (chroniškas) perdegimas.",
+              "Ankstyvoje stadijoje simptomai lengvai nurašomi: „aš tiesiog pavargęs/-usi“, „reikia atostogų“, „čia tik įtemptas periodas“ — ir tai iš dalies gali būti tiesa.",
+              "Skirtumas tarp trumpalaikio nuovargio ir perdegimo pradžios yra trukmė ir kryptis: ar simptomai laikini, ar vis stiprėja.",
+              "Trečioje stadijoje nuovargis tampa nuolatinis — jaučiamas net savaitgaliais, atsiranda cinizmas, kolegos ar klientai ima jaustis kaip problemos, o ne žmonės.",
+              "Paprastas darbo stresas ir perdegimas skiriasi iš esmės: stresas — tai per didelis įsitraukimas ir emocinis intensyvumas, o perdegimas — atsiribojimas, emocijų nuslopimas ir prasmės praradimas."
+            ],
+            takeaway: "Esmė: jei nuovargis tampa nuolatinis ir prie jo prisideda cinizmas ar atsiribojimas — tai jau ne „įtemptas periodas“, o ankstyva perdegimo stadija."
+          },
+          LV: {
+            points: [
+              "Izdegšana attīstās piecos posmos: \"medus mēneša\" fāze, stresa sākums, hronisks stress, pilnīga izdegšana, ierastā (hroniskā) izdegšana.",
+              "Agrīnā stadijā simptomus viegli noraksta: \"es vienkārši esmu noguris/-usi\", \"vajag atvaļinājumu\", \"tas ir tikai saspringts periods\" — un daļēji tā var arī būt.",
+              "Atšķirība starp īslaicīgu nogurumu un izdegšanas sākumu ir ilgums un virziens: vai simptomi ir īslaicīgi, vai arvien pastiprinās.",
+              "Trešajā stadijā nogurums kļūst pastāvīgs — jūtams pat nedēļas nogalēs, parādās cinisms, kolēģi vai klienti sāk šķist kā problēmas, nevis cilvēki.",
+              "Parasts darba stress un izdegšana atšķiras pēc būtības: stress ir pārmērīga iesaiste un emocionāla intensitāte, savukārt izdegšana — norobežošanās, emociju notrulināšanās un jēgas zudums."
+            ],
+            takeaway: "Būtība: ja nogurums kļūst pastāvīgs un tam pievienojas cinisms vai norobežošanās — tas vairs nav \"saspringts periods\", bet gan agrīna izdegšanas stadija."
+          },
+          EE: {
+            points: [
+              "Läbipõlemine areneb viies etapis: \"mesinädalate\" faas, stressi algus, krooniline stress, täielik läbipõlemine, harjumuspärane (krooniline) läbipõlemine.",
+              "Varajases staadiumis kirjutatakse sümptomid kergesti maha: \"olen lihtsalt väsinud\", \"vajan puhkust\", \"see on lihtsalt pingeline periood\" — ja osaliselt võib see nii ollagi.",
+              "Vahe lühiajalise väsimuse ja läbipõlemise alguse vahel on kestus ja suund: kas sümptomid on ajutised või üha süvenevad.",
+              "Kolmandas staadiumis muutub väsimus püsivaks — seda tuntakse ka nädalavahetustel, tekib küünilisus, kolleegid või kliendid hakkavad tunduma pigem probleemidena kui inimestena.",
+              "Tavaline tööstress ja läbipõlemine erinevad põhimõtteliselt: stress tähendab liigset kaasatust ja emotsionaalset intensiivsust, läbipõlemine aga distantseerumist, tunnete tuimenemist ja mõtte kadumist."
+            ],
+            takeaway: "Põhimõte: kui väsimus muutub püsivaks ja sellega kaasneb küünilisus või distantseerumine — pole see enam \"pingeline periood\", vaid läbipõlemise varajane staadium."
+          }
+        },
+        task: "For three days in a row, rate your energy level from 1 to 10 each morning when you wake up and each evening before bed. For each day, jot down one sentence about what affected your state the most. This week's goal isn't to analyze — just to observe.",
+        sheetName: "Energy Map",
+        sheetDesc: "Track morning and evening energy for three days, note quick observations, then identify your energy leaks and reflect.",
+        fields: [
+          { type:'rows', key:'days', label:'3-Day Tracking', rowLabels:['Day 1','Day 2','Day 3'],
+            columns:[
+              {key:'morning', type:'range', label:'Morning'},
+              {key:'evening', type:'range', label:'Evening'},
+              {key:'note', type:'textarea', label:'Note', placeholder:'What drained or gave you energy?'}
+            ]},
+          { type:'list', key:'leaks', label:'Three energy leaks', count:3, placeholder:"What's draining your energy...", aiDraft:true },
+          { type:'textarea', key:'reflect1', label:'When was your energy highest — and why?', aiDraft:true },
+          { type:'textarea', key:'reflect2', label:'What repeated across all three days?', aiDraft:true },
+          { type:'textarea', key:'reflect3', label:'What would you change next week?', aiDraft:true }
+        ]
+      },
+      {
+        title: "Find the Roots, Not the Symptoms",
+        blurb: "Find the real causes, not just the signs of fatigue.",
+        sourceTitle: "Burned Out? Berkeley Expert's Book Offers Roadmap to a Better Workplace",
+        sourceOutlet: "UC Berkeley Research (on Christina Maslach's book 'The Burnout Challenge')",
+        sourceUrl: "https://vcresearch.berkeley.edu/news/burned-out-berkeley-experts-book-offers-roadmap-better-workplace",
+        sourceBlurb: "Introduces burnout researcher Christina Maslach's six-area model as a mismatch between a person and their job, rather than a personal weakness.",
+        summary: {
+          LT: {
+            points: [
+              "Maslach ir Leiter išskiria šešias darbo gyvenimo sritis, kuriose gali atsirasti neatitikimas: krūvis, kontrolė, atlygis, bendruomenė, teisingumas, vertybės.",
+              "Neatitikimas net vienoje srityje gali sukelti perdegimą; kai neatitinka trys ar daugiau sričių vienu metu, perdegimas beveik neišvengiamas.",
+              "Dauguma žmonių iš karto įvardija tik krūvį ir atlygį — likusios keturios sritys dažnai lieka nepastebėtos, nors būtent ten slypi didžioji dalis realaus signalo.",
+              "Sprendimas — ne „sutaisyti darbuotoją“, o suprasti, kur konkrečiai yra neatitikimas tarp žmogaus ir darbo."
+            ],
+            takeaway: "Esmė: perdegimas dažniausiai kyla ne iš vienos aiškios priežasties, o iš kelių tyliai susikaupusių neatitikimų — kuriuos verta įvardyti po vieną."
+          },
+          LV: {
+            points: [
+              "Maslahas un Leitera modelis izšķir sešas darba dzīves jomas, kurās var rasties neatbilstība: slodze, kontrole, atalgojums, kopiena, taisnīgums, vērtības.",
+              "Neatbilstība pat vienā jomā var izraisīt izdegšanu; ja neatbilst trīs vai vairāk jomas vienlaikus, izdegšana ir gandrīz neizbēgama.",
+              "Lielākā daļa cilvēku uzreiz min tikai slodzi un atalgojumu — pārējās četras jomas bieži paliek nepamanītas, lai gan tieši tur slēpjas liela daļa reālā signāla.",
+              "Risinājums nav \"salabot darbinieku\", bet gan saprast, kur tieši pastāv neatbilstība starp cilvēku un darbu."
+            ],
+            takeaway: "Būtība: izdegšana visbiežāk rodas nevis no viena skaidra iemesla, bet no vairākām klusi uzkrātām neatbilstībām — kuras ir vērts nosaukt katru atsevišķi."
+          },
+          EE: {
+            points: [
+              "Maslachi ja Leiteri mudel eristab kuut töö- ja eluvaldkonda, kus võib tekkida mittevastavus: töökoormus, kontroll, tasu, kogukond, õiglus, väärtused.",
+              "Mittevastavus kasvõi ühes valdkonnas võib põhjustada läbipõlemist; kui ei sobi kolm või enam valdkonda korraga, on läbipõlemine peaaegu vältimatu.",
+              "Enamik inimesi nimetab kohe ainult töökoormust ja tasu — ülejäänud neli valdkonda jäävad sageli märkamata, kuigi just seal peitub suur osa tegelikust signaalist.",
+              "Lahendus ei ole \"töötaja parandamine\", vaid mõistmine, kus täpselt seisneb mittevastavus inimese ja töö vahel."
+            ],
+            takeaway: "Põhimõte: läbipõlemine ei teki tavaliselt ühest selgest põhjusest, vaid mitmest vaikselt kuhjunud mittevastavusest — mida tasub nimetada ükshaaval."
+          }
+        },
+        task: "Review the six areas — workload, control, reward, community, fairness, values — and rate how well each one fits for you. From all six, identify the three where the mismatch feels strongest.",
+        sheetName: "'Where My Energy Goes' Table",
+        sheetDesc: "Rate the fit for each of the six areas and describe the situation, then identify your three priority areas.",
+        fields: [
+          { type:'rows', key:'areas', label:'Six Areas', rowLabels:['Workload','Control','Reward','Community','Fairness','Values'],
+            columns:[
+              {key:'level', type:'range', label:'Fit'},
+              {key:'note', type:'text', label:'Situation', placeholder:'Briefly describe...'}
+            ]},
+          { type:'list', key:'priorities', label:'Three priority areas', count:3, placeholder:'Which area matters most...' }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Building Foundations",
+    weeks: [
+      {
+        title: "Boundaries",
+        blurb: "Learn to say no without the guilt.",
+        sourceTitle: "How to Get Better at Saying No",
+        sourceOutlet: "HBR IdeaCast, with Dr. Sunita Sah",
+        sourceUrl: "https://hbr.org/podcast/2025/01/how-to-get-better-at-saying-no",
+        sourceBlurb: "A behavioral scientist explains why people default to compliance even against their own interests, and offers ways to respond more deliberately.",
+        summary: {
+          LT: {
+            points: [
+              "Socialinis spaudimas ir nelygi galios pozicija skatina automatiškai sutikti, net kai tai prieštarauja pačių sprendimui ar interesams.",
+              "Šis „automatinis sutikimas“ yra dažnas ir dažnai nepastebimas elgesio modelis, o ne sąmoningas pasirinkimas.",
+              "Per didelis nuolaidžiavimas turi realią kainą — tiek asmeninę, tiek profesinę.",
+              "Siūloma mokytis atpažinti tą automatinį refleksą ir sąmoningai kurti pauzę tarp prašymo ir atsakymo.",
+              "Ribų nustatymas — išmokstamas įgūdis, ne įgimtas bruožas."
+            ],
+            takeaway: "Esmė: dažniausiai sutinkame ne todėl, kad norime, o todėl, kad atsisakymas atrodo nepatogus — bet ta pauzė prieš atsakant yra treniruojama."
+          },
+          LV: {
+            points: [
+              "Sociālais spiediens un nevienlīdzīga varas pozīcija veicina automātisku piekrišanu, pat ja tas ir pretrunā ar paša spriedumu vai interesēm.",
+              "Šī \"automātiskā piekrišana\" ir bieži sastopams un bieži nepamanīts uzvedības modelis, nevis apzināta izvēle.",
+              "Pārmērīgai piekāpībai ir reāla cena — gan personiska, gan profesionāla.",
+              "Ieteikts mācīties atpazīt šo automātisko refleksu un apzināti radīt pauzi starp lūgumu un atbildi.",
+              "Robežu noteikšana ir apgūstama prasme, nevis iedzimta rakstura īpašība."
+            ],
+            takeaway: "Būtība: visbiežāk piekrītam nevis tāpēc, ka to vēlamies, bet tāpēc, ka atteikums šķiet neērts — taču šī pauze pirms atbildes ir trenējama."
+          },
+          EE: {
+            points: [
+              "Sotsiaalne surve ja ebavõrdne võimupositsioon soodustavad automaatset nõustumist, isegi kui see on vastuolus inimese enda otsuse või huvidega.",
+              "See \"automaatne nõustumine\" on sage ja sageli märkamatu käitumismuster, mitte teadlik valik.",
+              "Liigsel järeleandmisel on reaalne hind — nii isiklik kui ka professionaalne.",
+              "Soovitatakse õppida seda automaatset refleksi ära tundma ja teadlikult luua paus palve ja vastuse vahele.",
+              "Piiride seadmine on õpitav oskus, mitte kaasasündinud omadus."
+            ],
+            takeaway: "Põhimõte: enamasti nõustume mitte seepärast, et tahame, vaid seepärast, et keeldumine tundub ebamugav — kuid see paus enne vastamist on treenitav."
+          }
+        },
+        task: "This week, deliberately say no to one request that doesn't match your priorities. Before answering, pause and ask yourself: am I agreeing because I truly want to, or because it's easier right now?",
+        sheetName: "Boundary Scenarios List",
+        sheetDesc: "List the situations where saying no is hardest, and prepare a concrete response phrase for each.",
+        fields: [
+          { type:'rows', key:'scenarios', label:'Boundary Scenarios', rowLabels:['Scenario 1','Scenario 2','Scenario 3','Scenario 4'],
+            columns:[
+              {key:'situation', type:'text', label:'Situation', placeholder:'When is it hard to say no...'},
+              {key:'response', type:'text', label:'Response phrase', placeholder:'What will I say...'}
+            ]}
+        ]
+      },
+      {
+        title: "Quality of Rest",
+        blurb: "The difference between rest and just a break.",
+        sourceTitle: "The 7 Types of Rest That Every Person Needs",
+        sourceOutlet: "TED Ideas, Dr. Saundra Dalton-Smith",
+        sourceUrl: "https://ideas.ted.com/the-7-types-of-rest-that-every-person-needs/",
+        sourceBlurb: "A physician explains why sleep alone often isn't enough, and identifies seven distinct types of recovery.",
+        summary: {
+          LT: {
+            points: [
+              "Poilsis ir miegas nėra sinonimai — miegas yra tik viena iš septynių poilsio rūšių.",
+              "Septyni poilsio tipai: fizinis, protinis, jausminis, socialinis, jusluinis, kūrybinis, dvasinis.",
+              "Fizinis poilsis turi pasyvų (miegas) ir aktyvų (raminantis judėjimas) komponentus.",
+              "Pakankamai miegantys, bet vis tiek išsekę žmonės dažniausiai turi trūkumą kitose — ne fizinėse — poilsio srityse.",
+              "Trūkumas vienoje poilsio srityje dažnai signalizuoja trūkumą ir kitose susijusiose srityse."
+            ],
+            takeaway: "Esmė: jei ilsiesi, bet vis tiek jautiesi tuščias/-ia, klausimas nėra „ar miegi pakankamai“, o „kurios poilsio rūšies trūksta labiausiai“."
+          },
+          LV: {
+            points: [
+              "Atpūta un miegs nav sinonīmi — miegs ir tikai viens no septiņiem atpūtas veidiem.",
+              "Septiņi atpūtas veidi: fiziskā, mentālā, emocionālā, sociālā, sensorā, radošā, garīgā.",
+              "Fiziskajai atpūtai ir pasīvā (miegs) un aktīvā (nomierinoša kustība) sastāvdaļa.",
+              "Cilvēki, kas guļ pietiekami, bet tomēr jūtas izsmelti, visbiežāk izjūt trūkumu citās — nevis fiziskajās — atpūtas jomās.",
+              "Trūkums vienā atpūtas jomā bieži signalizē par trūkumu arī citās saistītās jomās."
+            ],
+            takeaway: "Būtība: ja atpūties, bet tomēr jūties tukšs/-a, jautājums nav \"vai guli pietiekami\", bet gan \"kura atpūtas veida tev trūkst visvairāk\"."
+          },
+          EE: {
+            points: [
+              "Puhkus ja uni ei ole sünonüümid — uni on vaid üks seitsmest puhkuseliigist.",
+              "Seitse puhkuseliiki: füüsiline, vaimne, emotsionaalne, sotsiaalne, sensoorne, loov ja hingeline.",
+              "Füüsilisel puhkusel on passiivne (uni) ja aktiivne (rahustav liikumine) osa.",
+              "Piisavalt magavad, kuid ikkagi kurnatud inimesed kannatavad enamasti puuduse all just teistes — mitte füüsilistes — puhkuseliikides.",
+              "Puudus ühes puhkuseliigis viitab sageli puudusele ka teistes seotud valdkondades."
+            ],
+            takeaway: "Põhimõte: kui puhkad, aga tunned end ikkagi tühjana, ei ole küsimus \"kas magad piisavalt\", vaid \"millist puhkuseliiki sul kõige rohkem puudu on\"."
+          }
+        },
+        task: "Review the seven types of rest and rate where you feel the biggest shortfall. Add at least one new, concrete rest ritual for that area.",
+        sheetName: "Rest Audit",
+        sheetDesc: "Rate the shortfall for each of the seven rest types and note a concrete action to restore it.",
+        fields: [
+          { type:'rows', key:'restTypes', label:'7 Types of Rest', rowLabels:['Physical','Mental','Emotional','Social','Sensory','Creative','Spiritual'],
+            columns:[
+              {key:'level', type:'range', label:'Shortfall'},
+              {key:'action', type:'text', label:'Action', placeholder:'What will I try...'}
+            ]}
+        ]
+      }
+    ]
+  },
+  {
+    label: "Application",
+    weeks: [
+      {
+        title: "Priorities",
+        blurb: "Plan around energy, not just time.",
+        sourceTitle: "Manage Your Energy, Not Your Time",
+        sourceOutlet: "Harvard Business Review, T. Schwartz and C. McCarthy",
+        sourceUrl: "https://hbr.org/2007/10/manage-your-energy-not-your-time",
+        sourceBlurb: "A classic article arguing that time is a finite resource, while energy is renewable — and can be deliberately strengthened.",
+        summary: {
+          LT: {
+            points: [
+              "Ilgesnės darbo valandos neveikia ilgalaikėje perspektyvoje, nes laikas baigtinis — energija, priešingai, gali būti plečiama ir atkuriama.",
+              "Energija turi keturis šaltinius: kūną, jausmus, protą ir prasmę — kiekvieną galima stiprinti atskirai.",
+              "Trumpos, reguliarios pertraukos atkuria fizinę energiją geriau nei ištisinis darbas be pauzių.",
+              "Įvykių vertinimas per „vilties kupiną“, o ne aukos perspektyvą, sumažina energiją eikvojančias reakcijas.",
+              "Siūloma kurti mažus, pasikartojančius ritualus kiekvienai energijos sričiai."
+            ],
+            takeaway: "Esmė: klausimas „kaip rasti daugiau laiko“ yra klaidingas — teisingas klausimas yra „kaip atkurti daugiau energijos“."
+          },
+          LV: {
+            points: [
+              "Garākas darba stundas ilgtermiņā nedarbojas, jo laiks ir ierobežots — savukārt enerģiju var paplašināt un atjaunot.",
+              "Enerģijai ir četri avoti: ķermenis, emocijas, prāts un jēga — katru var stiprināt atsevišķi.",
+              "Īsi, regulāri pārtraukumi atjauno fizisko enerģiju labāk nekā nepārtraukts darbs bez pauzēm.",
+              "Notikumu vērtējums caur \"cerīgu\", nevis upura perspektīvu, mazina enerģiju izsīcinošas reakcijas.",
+              "Ieteikts veidot mazus, atkārtotus rituālus katrai enerģijas jomai."
+            ],
+            takeaway: "Būtība: jautājums \"kā atrast vairāk laika\" ir nepareizs — pareizais jautājums ir \"kā atjaunot vairāk enerģijas\"."
+          },
+          EE: {
+            points: [
+              "Pikemad tööpäevad ei toimi pikas perspektiivis, sest aeg on piiratud — energiat seevastu saab laiendada ja taastada.",
+              "Energial on neli allikat: keha, tunded, mõistus ja tähendus — igaüht saab eraldi tugevdada.",
+              "Lühikesed, regulaarsed pausid taastavad füüsilist energiat paremini kui katkematu töö ilma pausideta.",
+              "Sündmuste hindamine \"lootusrikkast\", mitte ohvri vaatenurgast, vähendab energiat kurnavaid reaktsioone.",
+              "Soovitatakse luua väikeseid, korduvaid rituaale iga energiaallika jaoks."
+            ],
+            takeaway: "Põhimõte: küsimus \"kuidas leida rohkem aega\" on vale — õige küsimus on \"kuidas taastada rohkem energiat\"."
+          }
+        },
+        task: "Using your Week 1 energy map, replan your week so your most important tasks fall during your highest-energy hours.",
+        sheetName: "Weekly Template",
+        sheetDesc: "Mark your energy peak for each day of the week and assign that day's most important task to it.",
+        fields: [
+          { type:'rows', key:'week', label:'Weekly Template', rowLabels:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+            columns:[
+              {key:'peak', type:'text', label:'Energy peak', placeholder:'e.g. 9–11am'},
+              {key:'task', type:'text', label:'Most important task', placeholder:"What I'll do then..."}
+            ]}
+        ]
+      },
+      {
+        title: "Support Network",
+        blurb: "Isolation worsens burnout — connection eases it.",
+        sourceTitle: "Social Connection",
+        sourceOutlet: "Greater Good Science Center, UC Berkeley",
+        sourceUrl: "https://greatergood.berkeley.edu/topic/social_connection",
+        sourceBlurb: "A research overview showing that a sense of belonging is a core psychological need, and strong connection is one of the most reliable protective factors against stress.",
+        summary: {
+          LT: {
+            points: [
+              "Socialinis ryšys — jausmas, kad priklausai grupei ir esi artimas kitiems — laikomas pamatiniu psichologiniu poreikiu, ne prabanga.",
+              "Poreikis jungtis su kitais įsišaknijęs biologijoje, prasidedantis nuo gimimo per ryšį su globėju.",
+              "Stiprus socialinis palaikymas nuosekliai siejamas su apsauga nuo lėtinio streso pasekmių.",
+              "Priklausymo jausmas veikia ne tik emocinę savijautą, bet ir bendrą pasitenkinimą gyvenimu."
+            ],
+            takeaway: "Esmė: socialinis ryšys nėra malonus priedas — tai vienas pamatinių apsauginių mechanizmų prieš lėtinį stresą."
+          },
+          LV: {
+            points: [
+              "Sociālais tuvums — sajūta, ka piederi grupai un esi tuvs citiem — tiek uzskatīts par pamata psiholoģisku vajadzību, nevis greznību.",
+              "Vajadzība veidot saikni ar citiem ir iesakņojusies bioloģijā, sākot jau no dzimšanas caur saikni ar aprūpētāju.",
+              "Spēcīgs sociālais atbalsts konsekventi tiek saistīts ar aizsardzību pret hroniska stresa sekām.",
+              "Piederības sajūta ietekmē ne tikai emocionālo pašsajūtu, bet arī vispārējo apmierinātību ar dzīvi."
+            ],
+            takeaway: "Būtība: sociālā saikne nav patīkams papildinājums — tas ir viens no pamata aizsardzības mehānismiem pret hronisku stresu."
+          },
+          EE: {
+            points: [
+              "Sotsiaalne side — tunne, et kuulud gruppi ja oled teistele lähedane — on põhiline psühholoogiline vajadus, mitte luksus.",
+              "Vajadus teistega siduda on juurdunud bioloogias, alustades sünnist saadik sidemest hooldajaga.",
+              "Tugev sotsiaalne toetus on järjepidevalt seotud kaitsega kroonilise stressi tagajärgede eest.",
+              "Kuuluvustunne mõjutab lisaks emotsionaalsele heaolule ka üldist rahulolu eluga."
+            ],
+            takeaway: "Põhimõte: sotsiaalne side ei ole meeldiv lisand — see on üks peamisi kaitsemehhanisme kroonilise stressi vastu."
+          }
+        },
+        task: "Reach out to one person you trust and honestly share how you're really doing.",
+        sheetName: "Conversation Guide",
+        sheetDesc: "Prepare for the conversation — who, when, what you want to say — then note how it went afterward.",
+        fields: [
+          { type:'text', key:'who', label:"Who I'll talk to", placeholder:'Name' },
+          { type:'text', key:'when', label:'When', placeholder:'e.g. Thursday evening' },
+          { type:'textarea', key:'saywhat', label:'What I want to say' },
+          { type:'textarea', key:'afterward', label:'How it went (fill in afterward)' }
+        ]
+      }
+    ]
+  },
+  {
+    label: "Consolidation",
+    weeks: [
+      {
+        title: "Integration",
+        blurb: "Tie six weeks together into one personal system.",
+        sourceTitle: null,
+        sourceOutlet: "No new source — synthesis only",
+        sourceUrl: null,
+        sourceBlurb: "This week is deliberately free of new content: review your previous worksheets and pull them together into your own system.",
+        summary: { LT:{points:[],takeaway:""}, LV:{points:[],takeaway:""}, EE:{points:[],takeaway:""} },
+        task: "Review all six previous weeks' worksheets. From them, identify the recurring early-warning signs that are most characteristic for you.",
+        sheetName: "Early-Warning Card",
+        sheetDesc: "3–5 personal early warning signs, each paired with one concrete action to take when you notice it.",
+        fields: [
+          { type:'rows', key:'warnings', label:'Early Warning Signs', rowLabels:['1','2','3','4','5'],
+            columns:[
+              {key:'signal', type:'text', label:'Signal', placeholder:"What I notice..."},
+              {key:'action', type:'text', label:'Action', placeholder:"What I'll do..."}
+            ]}
+        ]
+      }
+    ]
+  }
+];
+
+let TOTAL = 0;
+let taskDone = [];
+let openCards = [];
+let openSummaries = [];
+let langByWeek = [];
+let formData = {};
+
+function resetJourneyState(){
+  let n = 0;
+  PHASES.forEach(p => p.weeks.forEach(w => { n++; w.num = n; }));
+  TOTAL = n;
+  taskDone = new Array(TOTAL).fill(false);
+  openCards = new Array(TOTAL).fill(false);
+  openSummaries = new Array(TOTAL).fill(false);
+  langByWeek = new Array(TOTAL).fill("LT");
+  formData = {};
+}
+resetJourneyState();
+
+function defaultFieldValue(field){
+  if(field.type === 'rows'){
+    return field.rowLabels.map(() => {
+      const row = {};
+      field.columns.forEach(c => { row[c.key] = c.type === 'range' ? 5 : ''; });
+      return row;
+    });
+  }
+  if(field.type === 'list'){
+    return new Array(field.count).fill('');
+  }
+  return '';
+}
+
+let flatWeeks = [];
+
+function getWeekData(i){
+  const w = flatWeeks[i];
+  if(!formData[i]) formData[i] = {};
+  w.fields.forEach(f => {
+    if(formData[i][f.key] === undefined) formData[i][f.key] = defaultFieldValue(f);
+  });
+  return formData[i];
+}
+
+function renderColor(i){
+  return i === TOTAL - 1 ? "#e0a868" : "#502880"; // gold marks final completion, violet marks progress
+}
+
+function editBtn(attrs){
+  return `<button type="button" class="edit-fill-btn" ${attrs} title="Edit by hand">✏️</button>`;
+}
+
+function renderField(field, i){
+  const data = getWeekData(i)[field.key];
+  if(field.type === 'rows'){
+    return `
+      <div class="field">
+        <div class="field-label">${field.label}</div>
+        <div class="row-group">
+          ${field.rowLabels.map((rl, ri) => `
+            <div class="row-item">
+              <div class="row-item-label">${rl}</div>
+              ${field.columns.map(col => {
+                const val = data[ri][col.key];
+                if(col.type === 'range'){
+                  return `
+                    <div class="row-col">
+                      <div class="row-col-label">${col.label}</div>
+                      <div class="range-line">
+                        <input type="range" min="1" max="10" value="${val}" data-week="${i}" data-field="${field.key}" data-row="${ri}" data-col="${col.key}">
+                        <span class="range-val" data-valfor="${i}-${field.key}-${ri}-${col.key}">${val}</span>
+                      </div>
+                    </div>`;
+                }
+                const attrs = `data-week="${i}" data-field="${field.key}" data-row="${ri}" data-col="${col.key}"`;
+                if(col.type === 'textarea'){
+                  return `
+                    <div class="row-col">
+                      <div class="row-col-label">${col.label}</div>
+                      <div class="field-input">
+                        <textarea class="tall" placeholder="${col.placeholder||''}" ${attrs}>${val}</textarea>
+                        ${editBtn(attrs)}
+                      </div>
+                    </div>`;
+                }
+                return `
+                  <div class="row-col">
+                    <div class="row-col-label">${col.label}</div>
+                    <div class="field-input">
+                      <input type="text" value="${val}" placeholder="${col.placeholder||''}" ${attrs}>
+                      ${editBtn(attrs)}
+                    </div>
+                  </div>`;
+              }).join('')}
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+  if(field.type === 'list'){
+    const fieldAttrs = `data-week="${i}" data-field="${field.key}"`;
+    const listButtons = field.aiDraft
+      ? `<button type="button" class="draft-fill-btn" data-context="${escapeHtml(field.label)}" data-count="${field.count}" ${fieldAttrs} title="Draft from what I've already entered">✨</button>
+         ${editBtn(`data-listidx="0" ${fieldAttrs}`)}`
+      : '';
+    return `
+      <div class="field">
+        <div class="field-label-row">
+          <div class="field-label">${field.label}</div>
+          ${listButtons ? `<div class="field-btn-stack row">${listButtons}</div>` : ''}
+        </div>
+        ${data.map((val, li) => {
+          const attrs = `data-week="${i}" data-field="${field.key}" data-listidx="${li}"`;
+          return `
+          <div class="list-item">
+            <span class="list-num">${li+1}</span>
+            <input type="text" value="${val}" placeholder="${field.placeholder||''}" ${attrs}>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+  if(field.type === 'textarea'){
+    const attrs = `data-week="${i}" data-field="${field.key}"`;
+    const buttons = field.aiDraft
+      ? `<button type="button" class="draft-fill-btn" data-context="${escapeHtml(field.label)}" ${attrs} title="Draft from what I've already entered">✨</button>
+         ${editBtn(attrs)}`
+      : editBtn(attrs);
+    return `
+      <div class="field">
+        <div class="field-label">${field.label}</div>
+        <div class="field-input">
+          <textarea class="tall" placeholder="Write here..." ${attrs}>${data}</textarea>
+          <div class="field-btn-stack">${buttons}</div>
+        </div>
+      </div>`;
+  }
+  const attrs = `data-week="${i}" data-field="${field.key}"`;
+  return `
+    <div class="field">
+      <div class="field-label">${field.label}</div>
+      <div class="field-input">
+        <input type="text" value="${data}" placeholder="${field.placeholder||''}" ${attrs}>
+        ${editBtn(attrs)}
+      </div>
+    </div>`;
+}
+
+function render(){
+  flatWeeks = [];
+  PHASES.forEach(p => p.weeks.forEach(w => flatWeeks.push(w)));
+
+  const container = document.getElementById("phases");
+  container.innerHTML = PHASES.map(phase => `
+    <div class="phase">
+      <div class="phase-label">${phase.label}</div>
+      <div class="timeline">
+        <div class="rail"></div>
+        ${phase.weeks.map(w => {
+          const i = w.num - 1;
+          const done = taskDone[i];
+          const color = renderColor(i);
+          const isOpen = openCards[i];
+          const summaryOpen = openSummaries[i];
+          const lang = langByWeek[i];
+          const s = w.summary[lang];
+          return `
+          <div class="week">
+            <div class="node ${done?'done':''}" data-node="${i}" style="${done?`background:${color}`:''}">
+              ${done ? '✓' : w.num}
+            </div>
+            <div class="week-card ${isOpen?'open':''}" data-card="${i}">
+              <div class="week-top">
+                <div class="week-title"><span class="num">WEEK ${w.num}</span>${w.title}</div>
+                <div class="week-badge ${done?'':'pending'}">${done?'Done':'Not done'}</div>
+              </div>
+              <p class="week-blurb">${w.blurb}</p>
+
+              <div class="week-details">
+                <div class="resource-block">
+                  <div class="section-label">Source</div>
+                  ${w.sourceUrl
+                    ? `<a class="resource-title-link" href="${w.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${sourceTypeIcon(w.sourceType)} ${w.sourceTitle}</a><div class="resource-outlet">${w.sourceOutlet}</div>`
+                    : `<span class="resource-title-static">${sourceTypeIcon(w.sourceType)} ${w.sourceTitle || w.sourceOutlet}</span><div class="resource-outlet">${w.sourceTitle ? w.sourceOutlet : ''}</div>`
+                  }
+                  <p class="resource-blurb">${w.sourceBlurb}</p>
+                  ${w.sourceUrl ? `<a class="resource-fulllink" href="${w.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Read the original →</a>` : ''}
+                  ${(s && s.points && s.points.length) ? `
+                    <div>
+                      <button class="summary-toggle ${summaryOpen?'open':''}" data-summary-toggle="${i}"><span class="chev">▾</span> ${summaryOpen?'Hide':'Summary'}</button>
+                      <div class="summary-panel ${summaryOpen?'open':''}">
+                        <div class="lang-tabs">
+                          ${LANGS.map(l => `<button class="lang-tab ${l===lang?'active':''}" data-lang-tab="${i}" data-lang="${l}">${l}</button>`).join('')}
+                        </div>
+                        <ul>${s.points.map(p => `<li>${p}</li>`).join('')}</ul>
+                        <p class="summary-takeaway">${s.takeaway}</p>
+                        <div class="summary-voice">
+                          <button type="button" class="voice-mic small summary-voice-btn" data-week="${i}" data-lang="${lang}">🎙</button>
+                          <span class="voice-status summary-voice-status">Discuss this by voice — LT / LV / EE</span>
+                        </div>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+
+                <div class="task-block">
+                  <div class="section-label">Task</div>
+                  <p class="task-text">${w.task}</p>
+                </div>
+
+                <div class="sheet-block">
+                  <div class="section-label">Worksheet</div>
+                  <p class="sheet-name">${w.sheetName}</p>
+                  <p class="sheet-desc">${w.sheetDesc}</p>
+                  ${w.fields.map(f => renderField(f, i)).join('')}
+                  <div class="save-status">
+                    <span class="save-dot" id="saveDot-${i}"></span>
+                    <span id="saveText-${i}">Saved automatically</span>
+                  </div>
+                  <p class="task-hint">Tap <span class="hint-node ${done?'done':''}" data-node-hint="${i}" style="${done?`background:${color}`:''}">${done ? '✓' : w.num}</span> to mark this week done.</p>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+  `).join("");
+
+  bindEvents();
+}
+
+function bindEvents(){
+  document.querySelectorAll(".week-card").forEach(card => {
+    card.addEventListener("click", (e) => {
+      const i = +card.dataset.card;
+      openCards[i] = !openCards[i];
+      render();
+    });
+  });
+  document.querySelectorAll(".node").forEach(node => {
+    node.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const i = +node.dataset.node;
+      taskDone[i] = !taskDone[i];
+      render();
+      updateSummary();
+      saveTasks();
+    });
+  });
+  document.querySelectorAll("[data-summary-toggle]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const i = +btn.dataset.summaryToggle;
+      openSummaries[i] = !openSummaries[i];
+      render();
+    });
+  });
+  document.querySelectorAll("[data-lang-tab]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const i = +btn.dataset.langTab;
+      langByWeek[i] = btn.dataset.lang;
+      render();
+    });
+  });
+  document.querySelectorAll("[data-node-hint]").forEach(hint => {
+    hint.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const i = +hint.dataset.nodeHint;
+      taskDone[i] = !taskDone[i];
+      render();
+      updateSummary();
+      saveTasks();
+    });
+  });
+
+  document.querySelectorAll("input[type=text][data-week], textarea[data-week]").forEach(inp => {
+    inp.addEventListener("click", (e) => e.stopPropagation());
+    inp.addEventListener("input", (e) => {
+      const i = +inp.dataset.week;
+      const fieldKey = inp.dataset.field;
+      const data = getWeekData(i);
+      if(inp.dataset.listidx !== undefined){
+        data[fieldKey][+inp.dataset.listidx] = inp.value;
+      }else if(inp.dataset.row !== undefined){
+        data[fieldKey][+inp.dataset.row][inp.dataset.col] = inp.value;
+      }else{
+        data[fieldKey] = inp.value;
+      }
+      scheduleSaveForm(i);
+    });
+  });
+  document.querySelectorAll("input[type=range][data-week]").forEach(inp => {
+    inp.addEventListener("click", (e) => e.stopPropagation());
+    inp.addEventListener("input", (e) => {
+      const i = +inp.dataset.week;
+      const fieldKey = inp.dataset.field;
+      const ri = +inp.dataset.row;
+      const col = inp.dataset.col;
+      const data = getWeekData(i);
+      data[fieldKey][ri][col] = +inp.value;
+      const valEl = document.querySelector(`[data-valfor="${i}-${fieldKey}-${ri}-${col}"]`);
+      if(valEl) valEl.textContent = inp.value;
+      scheduleSaveForm(i);
+    });
+  });
+  document.querySelectorAll(".draft-fill-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      btn.dataset.count ? handleDraftFillList(btn) : handleDraftFillClick(btn);
+    });
+  });
+  document.querySelectorAll(".edit-fill-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const target = findTargetInput(btn);
+      target.focus();
+      target.setSelectionRange(target.value.length, target.value.length);
+    });
+  });
+  document.querySelectorAll(".summary-voice-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleSummaryVoiceClick(btn);
+    });
+  });
+}
+
+function findTargetInput(btn){
+  const d = btn.dataset;
+  let sel = `[data-week="${d.week}"][data-field="${d.field}"]`;
+  if (d.row !== undefined) sel += `[data-row="${d.row}"][data-col="${d.col}"]`;
+  if (d.listidx !== undefined) sel += `[data-listidx="${d.listidx}"]`;
+  return document.querySelector(`input${sel}, textarea${sel}`);
+}
+
+function updateSummary(){
+  const done = taskDone.filter(Boolean).length;
+  document.getElementById("summaryCount").innerHTML = `${done}<span>/${TOTAL}</span>`;
+  document.getElementById("summaryFill").style.width = (done/TOTAL*100) + "%";
+}
+
+async function saveTasks(){
+  try{ await window.storage.set(journeyKey("tasks", currentJourneyId), JSON.stringify(taskDone)); }
+  catch(err){ console.error("Storage error:", err); }
+}
+
+let formSaveTimers = {};
+function scheduleSaveForm(i){
+  const dot = document.getElementById(`saveDot-${i}`);
+  const text = document.getElementById(`saveText-${i}`);
+  if(dot){ dot.style.opacity = "0.35"; }
+  if(text){ text.textContent = "Saving..."; }
+  clearTimeout(formSaveTimers[i]);
+  formSaveTimers[i] = setTimeout(async () => {
+    try{
+      await window.storage.set(journeyKey("forms", currentJourneyId), JSON.stringify(formData));
+      if(dot) dot.style.opacity = "1";
+      if(text) text.textContent = "Saved automatically";
+    }catch(err){
+      if(dot) dot.style.opacity = "1";
+      if(text) text.textContent = "Couldn't save — check your connection";
+      console.error("Storage error:", err);
+    }
+  }, 500);
+}
+
+async function load(){
+  try{
+    const result = await window.storage.get(journeyKey("tasks", currentJourneyId));
+    if(result && result.value){
+      const parsed = JSON.parse(result.value);
+      if(Array.isArray(parsed) && parsed.length === TOTAL) taskDone = parsed;
+    }
+  }catch(err){ console.log("No saved tasks yet:", err); }
+
+  try{
+    const result = await window.storage.get(journeyKey("forms", currentJourneyId));
+    if(result && result.value){
+      formData = JSON.parse(result.value);
+    }
+  }catch(err){ console.log("No saved forms yet:", err); }
+
+  await persistCurrentJourney(); // ensures the built-in journey has real saved state to switch back to later
+  await renderJourneySwitcher();
+  render();
+  updateSummary();
+  await refreshCompanionDisplay();
+  document.getElementById("companionBtn").addEventListener("click", requestCompanionNote);
+}
+
+/* ---------- AI companion ---------- */
+
+function collectProgressSnapshot(){
+  flatWeeks = [];
+  PHASES.forEach(p => p.weeks.forEach(w => flatWeeks.push(w)));
+
+  const doneCount = taskDone.filter(Boolean).length;
+  const weeks = flatWeeks.map((w, i) => {
+    const done = taskDone[i];
+    const data = formData[i] || {};
+    const notes = [];
+    w.fields.forEach(f => {
+      const val = data[f.key];
+      if(f.type === 'text' || f.type === 'textarea'){
+        if(val && val.trim()) notes.push(`${f.label}: ${val.trim()}`);
+      }else if(f.type === 'list' && Array.isArray(val)){
+        val.forEach(v => { if(v && v.trim()) notes.push(v.trim()); });
+      }else if(f.type === 'rows' && Array.isArray(val)){
+        val.forEach((row, ri) => {
+          const textParts = w.fields.find(ff=>ff.key===f.key).columns
+            .filter(c => c.type !== 'range')
+            .map(c => row[c.key])
+            .filter(v => v && v.trim());
+          if(textParts.length) notes.push(`${w.fields.find(ff=>ff.key===f.key).rowLabels[ri]}: ${textParts.join(' / ')}`);
+        });
+      }
+    });
+    return {
+      week: w.num,
+      title: w.title,
+      done: done,
+      notes: notes.slice(0, 4) // keep it light
+    };
+  }).filter(w => w.done || w.notes.length > 0);
+
+  return { journeyTitle: currentJourneyTitle, totalWeeks: TOTAL, weeksDone: doneCount, weeks };
+}
+
+async function requestCompanionNote(){
+  const btn = document.getElementById("companionBtn");
+  const body = document.getElementById("companionBody");
+  btn.disabled = true;
+  body.innerHTML = `<p class="companion-loading">Reading through what you've written...</p>`;
+
+  const snapshot = collectProgressSnapshot();
+
+  if(snapshot.weeks.length === 0){
+    body.innerHTML = `<p class="companion-empty">There's nothing to reflect on yet — fill in a task or worksheet, then check in.</p>`;
+    btn.disabled = false;
+    return;
+  }
+
+  try{
+    const response = await fetch(`${BACKEND}/api/companion-note`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(snapshot),
+    });
+    if(!response.ok){ throw new Error(await readErrorMessage(response, `Backend returned ${response.status}`)); }
+    const data = await response.json();
+    const text = (data.text || "").trim();
+
+    if(!text){ throw new Error("Empty response"); }
+
+    const now = new Date();
+    const stamp = now.toLocaleDateString(undefined, { month:'short', day:'numeric' }) + ", " + now.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' });
+
+    body.innerHTML = `<p class="companion-note">${escapeHtml(text)}</p><p class="companion-meta">${stamp}</p>`;
+
+    try{
+      await window.storage.set(journeyKey("companion", currentJourneyId), JSON.stringify({ text, stamp }));
+    }catch(err){ console.error("Could not save companion note:", err); }
+
+  }catch(err){
+    console.error("Companion error:", err);
+    body.innerHTML = `<p class="companion-error">${escapeHtml(err.message || "Couldn't reach your companion right now — try again in a moment.")}</p>`;
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+async function refreshCompanionDisplay(){
+  const body = document.getElementById("companionBody");
+  try{
+    const result = await window.storage.get(journeyKey("companion", currentJourneyId));
+    if(result && result.value){
+      const { text, stamp } = JSON.parse(result.value);
+      body.innerHTML = `<p class="companion-note">${escapeHtml(text)}</p><p class="companion-meta">${stamp}</p>`;
+      return;
+    }
+  }catch(err){ console.log("No saved companion note yet:", err); }
+  body.innerHTML = `<p class="companion-empty">A short, personal note based on what you've actually written — not a generic reminder. Ask for a check-in any time you want a moment of perspective, or talk it through out loud.</p>`;
+}
+
+async function handleDraftFillClick(btn){
+  const i = +btn.dataset.week;
+  const weekData = getWeekData(i);
+  btn.disabled = true;
+  btn.classList.add("processing");
+  btn.textContent = "…";
+
+  try {
+    const r = await fetch(`${BACKEND}/api/draft-note`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weekData, fieldLabel: btn.dataset.context }),
+    });
+    if (!r.ok) throw new Error(await readErrorMessage(r, `Backend returned ${r.status}`));
+    const data = await r.json();
+
+    const target = findTargetInput(btn);
+    target.value = data.text || "";
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+  } catch (err) {
+    console.error("Draft error:", err);
+    btn.title = "Couldn't draft — try again";
+    showToast(err.message || "Couldn't draft — try again");
+  } finally {
+    btn.textContent = "✨";
+    btn.classList.remove("processing");
+    btn.disabled = false;
+  }
+}
+
+async function handleDraftFillList(btn){
+  const i = +btn.dataset.week;
+  const fieldKey = btn.dataset.field;
+  const count = +btn.dataset.count;
+  const weekData = getWeekData(i);
+  btn.disabled = true;
+  btn.classList.add("processing");
+  btn.textContent = "…";
+
+  try {
+    const r = await fetch(`${BACKEND}/api/draft-note`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weekData, fieldLabel: btn.dataset.context, listCount: count }),
+    });
+    if (!r.ok) throw new Error(await readErrorMessage(r, `Backend returned ${r.status}`));
+    const data = await r.json();
+    const lines = (data.text || "").split("\n").map(s => s.trim()).filter(Boolean).slice(0, count);
+
+    for (let li = 0; li < count; li++) {
+      if (!lines[li]) continue;
+      const target = document.querySelector(`input[data-week="${i}"][data-field="${fieldKey}"][data-listidx="${li}"]`);
+      target.value = lines[li];
+      target.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  } catch (err) {
+    console.error("Draft error:", err);
+    btn.title = "Couldn't draft — try again";
+    showToast(err.message || "Couldn't draft — try again");
+  } finally {
+    btn.textContent = "✨";
+    btn.classList.remove("processing");
+    btn.disabled = false;
+  }
+}
+
+/* ---------- voice companion (Gemini Live) ---------- */
+
+const voiceBtn = document.getElementById("voiceBtn");
+const voicePanel = document.getElementById("voicePanel");
+const voiceMicBtn = document.getElementById("voiceMicBtn");
+const voiceStatus = document.getElementById("voiceStatus");
+
+let voiceSession = null, voiceActive = false, activeMicBtn = null, activeSetStatus = null;
+let micCtx = null, micStream = null, micNode = null;
+let playCtx = null, playTime = 0;
+
+function base64ToInt16(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Int16Array(bytes.buffer);
+}
+function int16ToBase64(int16) {
+  const bytes = new Uint8Array(int16.buffer);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function playPcm24k(int16) {
+  if (!playCtx) playCtx = new AudioContext({ sampleRate: 24000 });
+  const float32 = new Float32Array(int16.length);
+  for (let i = 0; i < int16.length; i++) float32[i] = int16[i] / 32768;
+  const buf = playCtx.createBuffer(1, float32.length, 24000);
+  buf.copyToChannel(float32, 0);
+  const src = playCtx.createBufferSource();
+  src.buffer = buf;
+  src.connect(playCtx.destination);
+  const now = playCtx.currentTime;
+  const startAt = Math.max(now, playTime);
+  src.start(startAt);
+  playTime = startAt + buf.duration;
+}
+
+const SET_FIELD_TOOL = {
+  name: "set_worksheet_field",
+  description: "Fill in one field of the person's worksheet for this week, based on what they've told you in conversation. Call this as soon as you have a confident value — don't wait until the end of the conversation.",
+  parameters: {
+    type: "OBJECT",
+    properties: {
+      field: { type: "STRING", description: "The field's key, exactly as given in the worksheet schema." },
+      row: { type: "INTEGER", description: "0-based row index — only for row-based (table) fields." },
+      col: { type: "STRING", description: "Column key — only for row-based (table) fields." },
+      listidx: { type: "INTEGER", description: "0-based item index — only for list fields." },
+      value: { type: "STRING", description: "The value to set. For a 1-10 rating field, give a plain number as text." },
+    },
+    required: ["field", "value"],
+  },
+};
+
+function describeFields(fields){
+  return fields.map(f => {
+    if (f.type === 'rows') return { key: f.key, type: 'rows', label: f.label, rows: f.rowLabels, columns: f.columns.map(c => ({ key: c.key, type: c.type, label: c.label })) };
+    if (f.type === 'list') return { key: f.key, type: 'list', label: f.label, count: f.count };
+    return { key: f.key, type: f.type, label: f.label };
+  });
+}
+
+const SUBMIT_NEEDS_TOOL = {
+  name: "submit_needs_assessment",
+  description: "Call this once you understand what the person needs, so their personalized growth journey can be built.",
+  parameters: {
+    type: "OBJECT",
+    properties: {
+      problem: { type: "STRING", description: "The real problem or goal, in their own words" },
+      currentLevel: { type: "STRING", description: "Where they are now — context, experience, severity" },
+      weeklyTimeMinutes: { type: "INTEGER", description: "Realistic minutes per week they can commit" },
+      formatPreference: { type: "STRING", description: "e.g. reading, audio, video, mixed" },
+      estimatedWeeks: { type: "INTEGER", description: "Suggested journey length, 4-8" },
+      language: { type: "STRING", description: "LT, LV, EE, or EN — the language they spoke in" },
+      notes: { type: "STRING", description: "Any other useful context" },
+    },
+    required: ["problem", "currentLevel", "weeklyTimeMinutes", "estimatedWeeks", "language"],
+  },
+};
+
+function flashField(el){
+  if (!el) return;
+  el.classList.add("just-filled");
+  setTimeout(() => el.classList.remove("just-filled"), 1400);
+}
+
+function applyFieldFromTool(weekIndex, args){
+  const { field, row, col, listidx, value } = args || {};
+  let sel = `[data-week="${weekIndex}"][data-field="${field}"]`;
+  if (row !== undefined && row !== null) sel += `[data-row="${row}"][data-col="${col}"]`;
+  if (listidx !== undefined && listidx !== null) sel += `[data-listidx="${listidx}"]`;
+  const target = document.querySelector(`input${sel}, textarea${sel}`);
+  if (!target) { console.warn("set_worksheet_field: no matching field for", args); return false; }
+  target.value = value;
+  target.dispatchEvent(new Event("input", { bubbles: true }));
+  flashField(target);
+  return true;
+}
+
+async function startVoiceSession(micBtn, tokenBody, setStatus, toolContext) {
+  if (voiceActive) stopVoiceSession();
+  activeMicBtn = micBtn;
+  activeSetStatus = setStatus;
+  micBtn.disabled = true;
+  setStatus("connecting...");
+
+  try {
+    const r = await fetch(`${BACKEND}/api/token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tokenBody),
+    });
+    if (!r.ok) throw new Error(await readErrorMessage(r, `Backend returned ${r.status}`));
+    const cfg = await r.json();
+
+    const ai = new GoogleGenAI({ apiKey: cfg.token, httpOptions: { apiVersion: "v1alpha" } });
+    voiceSession = await ai.live.connect({
+      model: cfg.model,
+      config: {
+        responseModalities: [Modality.AUDIO],
+        systemInstruction: { parts: [{ text: cfg.systemInstruction }] },
+        ...(toolContext ? { tools: [{ functionDeclarations: toolContext.tools }] } : {}),
+      },
+      callbacks: {
+        onopen: () => { setStatus("listening — go ahead"); micBtn.classList.add("active"); },
+        onmessage: (msg) => {
+          const parts = msg.serverContent?.modelTurn?.parts || [];
+          for (const p of parts) {
+            if (p.inlineData?.data) playPcm24k(base64ToInt16(p.inlineData.data));
+          }
+          if (msg.toolCall?.functionCalls?.length && toolContext) {
+            const responses = msg.toolCall.functionCalls.map((fc) => {
+              let ok = false;
+              try { ok = toolContext.onCall(fc) !== false; } catch (e) { console.error("Tool call error:", e); }
+              return { id: fc.id, name: fc.name, response: { result: ok ? "ok" : "failed" } };
+            });
+            voiceSession.sendToolResponse({ functionResponses: responses });
+          }
+        },
+        onerror: (e) => { setStatus("error — try again"); console.error(e); },
+        onclose: () => { setStatus("call ended"); },
+      },
+    });
+
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    micCtx = new AudioContext({ sampleRate: 16000 });
+    const src = micCtx.createMediaStreamSource(micStream);
+    micNode = micCtx.createScriptProcessor(4096, 1, 1);
+    micNode.onaudioprocess = (ev) => {
+      if (!voiceActive) return;
+      const float32 = ev.inputBuffer.getChannelData(0);
+      const int16 = new Int16Array(float32.length);
+      for (let i = 0; i < float32.length; i++) {
+        const s = Math.max(-1, Math.min(1, float32[i]));
+        int16[i] = s < 0 ? s * 32768 : s * 32767;
+      }
+      voiceSession.sendRealtimeInput({
+        audio: { data: int16ToBase64(int16), mimeType: "audio/pcm;rate=16000" },
+      });
+    };
+    src.connect(micNode);
+    micNode.connect(micCtx.destination);
+
+    voiceActive = true;
+    micBtn.disabled = false;
+  } catch (err) {
+    console.error("Voice session error:", err);
+    setStatus("couldn't connect — try again");
+    showToast(err.message || "Couldn't connect — try again");
+    micBtn.disabled = false;
+    activeMicBtn = null;
+    activeSetStatus = null;
+  }
+}
+
+function stopVoiceSession(idleText) {
+  voiceActive = false;
+  if (micNode) micNode.disconnect();
+  if (micStream) micStream.getTracks().forEach((t) => t.stop());
+  if (micCtx) micCtx.close();
+  if (voiceSession) voiceSession.close();
+  if (activeMicBtn) activeMicBtn.classList.remove("active");
+  if (activeSetStatus) activeSetStatus(idleText || "Tap to start talking");
+  activeMicBtn = null; activeSetStatus = null;
+  micNode = null; micStream = null; micCtx = null; voiceSession = null;
+}
+
+voiceBtn.addEventListener("click", () => {
+  const opening = voicePanel.hidden;
+  voicePanel.hidden = !opening;
+  voiceBtn.classList.toggle("active", opening);
+  if (!opening && activeMicBtn === voiceMicBtn) stopVoiceSession();
+});
+
+voiceMicBtn.addEventListener("click", () => {
+  if (activeMicBtn === voiceMicBtn) { stopVoiceSession(); return; }
+  startVoiceSession(
+    voiceMicBtn,
+    { mode: "companion", ...collectProgressSnapshot() },
+    (txt) => { voiceStatus.textContent = txt; }
+  );
+});
+
+function handleSummaryVoiceClick(btn){
+  if (activeMicBtn === btn) { stopVoiceSession("Discuss this by voice — LT / LV / EE"); return; }
+  const i = +btn.dataset.week;
+  const lang = btn.dataset.lang;
+  const w = flatWeeks[i];
+  const s = w.summary[lang];
+  const statusEl = btn.parentElement.querySelector(".summary-voice-status");
+  startVoiceSession(
+    btn,
+    {
+      mode: "resource", lang,
+      title: w.sourceTitle, outlet: w.sourceOutlet, points: s.points, takeaway: s.takeaway,
+      task: w.task, sheetName: w.sheetName, sheetDesc: w.sheetDesc,
+      fields: describeFields(w.fields), weekData: getWeekData(i),
+    },
+    (txt) => { statusEl.textContent = txt; },
+    { tools: [SET_FIELD_TOOL], onCall: (fc) => fc.name === "set_worksheet_field" ? applyFieldFromTool(i, fc.args) : false }
+  );
+}
+
+/* ---------- intake: build a new journey from a needs conversation ---------- */
+
+const intakeMicBtn = document.getElementById("intakeMicBtn");
+const intakeStatus = document.getElementById("intakeStatus");
+const intakeLoading = document.getElementById("intakeLoading");
+
+function setJourneyHeader(title){
+  const eyebrow = document.querySelector(".eyebrow");
+  const h1 = document.querySelector("h1");
+  if (eyebrow) eyebrow.textContent = `Your Journey · ${TOTAL} Weeks`;
+  if (h1) h1.textContent = title;
+}
+
+async function applyGeneratedJourney(data){
+  if (voiceActive) stopVoiceSession();
+  await persistCurrentJourney(); // keep the journey we're leaving
+
+  currentJourneyId = "journey-" + Date.now();
+  currentJourneyTitle = data.journeyTitle || "Your Journey";
+  PHASES = data.phases || [];
+  resetJourneyState();
+  setJourneyHeader(currentJourneyTitle);
+  render();
+  updateSummary();
+
+  await persistCurrentJourney(); // save the new one immediately too
+  await renderJourneySwitcher();
+  await refreshCompanionDisplay();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function switchToJourney(id){
+  if (id === currentJourneyId) return;
+  if (voiceActive) stopVoiceSession();
+  await persistCurrentJourney();
+
+  const list = await loadJourneysIndex();
+  const entry = list.find(j => j.id === id);
+  if (!entry) return;
+
+  let phasesJson = null, tasksJson = null, formsJson = null;
+  try { const r = await window.storage.get(journeyKey("phases", id)); phasesJson = r && r.value; } catch {}
+  try { const r = await window.storage.get(journeyKey("tasks", id)); tasksJson = r && r.value; } catch {}
+  try { const r = await window.storage.get(journeyKey("forms", id)); formsJson = r && r.value; } catch {}
+
+  currentJourneyId = id;
+  currentJourneyTitle = entry.title;
+  PHASES = phasesJson ? JSON.parse(phasesJson) : PHASES;
+  resetJourneyState();
+  if (tasksJson) { const parsed = JSON.parse(tasksJson); if (Array.isArray(parsed) && parsed.length === TOTAL) taskDone = parsed; }
+  if (formsJson) formData = JSON.parse(formsJson);
+
+  setJourneyHeader(currentJourneyTitle);
+  render();
+  updateSummary();
+  await renderJourneySwitcher();
+  await refreshCompanionDisplay();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function renderJourneySwitcher(){
+  const wrap = document.getElementById("journeySwitcher");
+  const select = document.getElementById("journeySelect");
+  if (!wrap || !select) return;
+  const list = await loadJourneysIndex();
+  if (list.length < 2) { wrap.hidden = true; return; }
+  wrap.hidden = false;
+  select.innerHTML = list.map(j =>
+    `<option value="${escapeHtml(j.id)}" ${j.id === currentJourneyId ? "selected" : ""}>${escapeHtml(j.title)}</option>`
+  ).join("");
+}
+
+async function submitNeedsAssessment(args){
+  intakeLoading.hidden = false;
+  try {
+    const r = await fetch(`${BACKEND}/api/generate-journey`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(args),
+    });
+    if (!r.ok) throw new Error(await readErrorMessage(r, `Backend returned ${r.status}`));
+    const data = await r.json();
+    applyGeneratedJourney(data);
+    showToast("Your journey is ready.");
+  } catch (err) {
+    console.error("Journey generation error:", err);
+    showToast(err.message || "Couldn't build your journey — please try again.");
+  } finally {
+    intakeLoading.hidden = true;
+  }
+}
+
+intakeMicBtn.addEventListener("click", () => {
+  if (activeMicBtn === intakeMicBtn) { stopVoiceSession(); return; }
+  startVoiceSession(
+    intakeMicBtn,
+    { mode: "intake" },
+    (txt) => { intakeStatus.textContent = txt; },
+    {
+      tools: [SUBMIT_NEEDS_TOOL],
+      onCall: (fc) => {
+        if (fc.name !== "submit_needs_assessment") return false;
+        setTimeout(() => stopVoiceSession("Tap to start talking"), 1200); // let the closing line play out
+        submitNeedsAssessment(fc.args);
+        return true;
+      },
+    }
+  );
+});
+
+document.getElementById("journeySelect").addEventListener("change", (e) => {
+  switchToJourney(e.target.value);
+});
+
+load();
+</script>
+</body>
+</html>
