@@ -21,10 +21,11 @@ import json
 import os
 import re
 import secrets
-import sqlite3
 import urllib.error
 import urllib.request
 
+import psycopg
+from psycopg.rows import dict_row
 from dotenv import load_dotenv
 from flask import Flask, g, jsonify, request, session
 from flask_cors import CORS
@@ -51,13 +52,21 @@ app.config.update(
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "navia.db")
+# Render's Postgres gives a "postgres://" URL; psycopg wants "postgresql://".
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL is not set. Create a Postgres database (Render: New > "
+        "PostgreSQL) and set its connection string as the DATABASE_URL env "
+        "var on this service."
+    )
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 
 def get_db():
     if "db" not in g:
-        g.db = sqlite3.connect(DB_PATH)
-        g.db.row_factory = sqlite3.Row
+        g.db = psycopg.connect(DATABASE_URL, row_factory=dict_row)
     return g.db
 
 
@@ -69,10 +78,10 @@ def close_db(exception=None):
 
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             created_at TEXT NOT NULL
@@ -80,19 +89,17 @@ def init_db():
     """)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS kv_store (
-            user_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL REFERENCES users(id),
             key TEXT NOT NULL,
             value TEXT NOT NULL,
-            PRIMARY KEY (user_id, key),
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            PRIMARY KEY (user_id, key)
         )
     """)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS auth_tokens (
             token TEXT PRIMARY KEY,
-            user_id INTEGER NOT NULL,
-            created_at TEXT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            user_id INTEGER NOT NULL REFERENCES users(id),
+            created_at TEXT NOT NULL
         )
     """)
     conn.commit()
@@ -115,7 +122,7 @@ def current_user():
         row = db.execute(
             "SELECT users.id AS id, users.username AS username "
             "FROM auth_tokens JOIN users ON users.id = auth_tokens.user_id "
-            "WHERE auth_tokens.token = ?",
+            "WHERE auth_tokens.token = %s",
             (token,),
         ).fetchone()
         if row:
@@ -152,19 +159,19 @@ def register():
         raise ApiError("Password must be at least 8 characters.", 400)
 
     db = get_db()
-    existing = db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
+    existing = db.execute("SELECT id FROM users WHERE username = %s", (username,)).fetchone()
     if existing:
         raise ApiError("That username is already taken.", 409)
 
     now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
     cur = db.execute(
-        "INSERT INTO users (username, password_hash, created_at) VALUES (?, ?, ?)",
+        "INSERT INTO users (username, password_hash, created_at) VALUES (%s, %s, %s) RETURNING id",
         (username, generate_password_hash(password), now),
     )
-    user_id = cur.lastrowid
+    user_id = cur.fetchone()["id"]
     token = secrets.token_urlsafe(32)
     db.execute(
-        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (?, ?, ?)",
+        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (%s, %s, %s)",
         (token, user_id, now),
     )
     db.commit()
@@ -180,14 +187,14 @@ def login():
     password = body.get("password") or ""
 
     db = get_db()
-    row = db.execute("SELECT id, password_hash FROM users WHERE username = ?", (username,)).fetchone()
+    row = db.execute("SELECT id, password_hash FROM users WHERE username = %s", (username,)).fetchone()
     if not row or not check_password_hash(row["password_hash"], password):
         raise ApiError("Incorrect username or password.", 401)
 
     token = secrets.token_urlsafe(32)
     now = datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
     db.execute(
-        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (?, ?, ?)",
+        "INSERT INTO auth_tokens (token, user_id, created_at) VALUES (%s, %s, %s)",
         (token, row["id"], now),
     )
     db.commit()
@@ -201,7 +208,7 @@ def logout():
     auth_header = request.headers.get("Authorization", "")
     if auth_header.startswith("Bearer "):
         db = get_db()
-        db.execute("DELETE FROM auth_tokens WHERE token = ?", (auth_header[len("Bearer "):].strip(),))
+        db.execute("DELETE FROM auth_tokens WHERE token = %s", (auth_header[len("Bearer "):].strip(),))
         db.commit()
     session.clear()
     return jsonify({"ok": True})
@@ -220,7 +227,7 @@ def me():
 def kv_get(key):
     db = get_db()
     row = db.execute(
-        "SELECT value FROM kv_store WHERE user_id = ? AND key = ?",
+        "SELECT value FROM kv_store WHERE user_id = %s AND key = %s",
         (g.user["id"], key),
     ).fetchone()
     if not row:
@@ -235,8 +242,8 @@ def kv_set(key):
     value = body.get("value", "")
     db = get_db()
     db.execute(
-        "INSERT INTO kv_store (user_id, key, value) VALUES (?, ?, ?) "
-        "ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value",
+        "INSERT INTO kv_store (user_id, key, value) VALUES (%s, %s, %s) "
+        "ON CONFLICT (user_id, key) DO UPDATE SET value = excluded.value",
         (g.user["id"], key, value),
     )
     db.commit()
