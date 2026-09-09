@@ -288,6 +288,7 @@
   .companion-btn.voice.active{ background:var(--gold); color:var(--violet-deep); border-color:transparent; }
   .companion-empty{ font-size:13px; color:var(--ink-soft); line-height:1.55; margin:8px 0 0; }
   .voice-panel{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+  .intake-confirm{ margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
   .voice-row{ display:flex; align-items:center; gap:12px; }
   .voice-mic{
     width:40px; height:40px; border-radius:50%; border:none; background:var(--violet);
@@ -455,6 +456,41 @@
       <button class="voice-mic" id="intakeMicBtn">🎙</button>
       <div class="voice-status" id="intakeStatus">Tap to start talking</div>
     </div>
+
+    <div class="intake-confirm" id="intakeConfirm" hidden>
+      <p class="field-label" style="margin-bottom:12px;">Here's what I understood — check it, fix anything that's off, then create the journey.</p>
+      <div class="field">
+        <div class="field-label">What you want to work on</div>
+        <textarea id="icProblem" class="tall"></textarea>
+      </div>
+      <div class="field">
+        <div class="field-label">Where you are now</div>
+        <textarea id="icCurrentLevel"></textarea>
+      </div>
+      <div class="field-btn-stack row">
+        <div class="field" style="flex:1;">
+          <div class="field-label">Minutes per week</div>
+          <input type="text" id="icWeeklyMinutes">
+        </div>
+        <div class="field" style="flex:1;">
+          <div class="field-label">Journey length (weeks)</div>
+          <input type="text" id="icWeeks">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">Format preference</div>
+        <input type="text" id="icFormat">
+      </div>
+      <div class="field">
+        <div class="field-label">Anything else worth knowing</div>
+        <textarea id="icNotes"></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:4px;">
+        <button type="button" class="companion-btn" id="icCreateBtn">Create journey</button>
+        <button type="button" class="companion-btn voice" id="icDiscardBtn">Start over</button>
+      </div>
+    </div>
+
     <p class="companion-loading" id="intakeLoading" hidden>Building your journey — this can take a minute or two...</p>
   </div>
 
@@ -1789,6 +1825,7 @@ async function renderJourneySwitcher(){
 }
 
 async function submitNeedsAssessment(args){
+  intakeConfirm.hidden = true;
   intakeLoading.hidden = false;
   try {
     const r = await fetch(`${BACKEND}/api/generate-journey`, {
@@ -1808,8 +1845,48 @@ async function submitNeedsAssessment(args){
   }
 }
 
+const intakeConfirm = document.getElementById("intakeConfirm");
+const icProblem = document.getElementById("icProblem");
+const icCurrentLevel = document.getElementById("icCurrentLevel");
+const icWeeklyMinutes = document.getElementById("icWeeklyMinutes");
+const icWeeks = document.getElementById("icWeeks");
+const icFormat = document.getElementById("icFormat");
+const icNotes = document.getElementById("icNotes");
+let pendingIntakeArgs = null;
+
+function showIntakeConfirm(args){
+  pendingIntakeArgs = args;
+  icProblem.value = args.problem || "";
+  icCurrentLevel.value = args.currentLevel || "";
+  icWeeklyMinutes.value = args.weeklyTimeMinutes ?? "";
+  icWeeks.value = args.estimatedWeeks ?? "";
+  icFormat.value = args.formatPreference || "";
+  icNotes.value = args.notes || "";
+  intakeConfirm.hidden = false;
+}
+
+document.getElementById("icCreateBtn").addEventListener("click", () => {
+  const args = {
+    ...pendingIntakeArgs,
+    problem: icProblem.value.trim(),
+    currentLevel: icCurrentLevel.value.trim(),
+    weeklyTimeMinutes: parseInt(icWeeklyMinutes.value, 10) || undefined,
+    estimatedWeeks: parseInt(icWeeks.value, 10) || undefined,
+    formatPreference: icFormat.value.trim(),
+    notes: icNotes.value.trim(),
+  };
+  submitNeedsAssessment(args);
+});
+
+document.getElementById("icDiscardBtn").addEventListener("click", () => {
+  intakeConfirm.hidden = true;
+  pendingIntakeArgs = null;
+  intakeStatus.textContent = "Tap to start talking";
+});
+
 intakeMicBtn.addEventListener("click", () => {
   if (activeMicBtn === intakeMicBtn) { stopVoiceSession(); return; }
+  intakeConfirm.hidden = true;
   startVoiceSession(
     intakeMicBtn,
     { mode: "intake" },
@@ -1819,7 +1896,7 @@ intakeMicBtn.addEventListener("click", () => {
       onCall: (fc) => {
         if (fc.name !== "submit_needs_assessment") return false;
         setTimeout(() => stopVoiceSession("Tap to start talking"), 1200); // let the closing line play out
-        submitNeedsAssessment(fc.args);
+        showIntakeConfirm(fc.args);
         return true;
       },
     }
